@@ -6,6 +6,9 @@ import com.xently.news.data.model.Article
 import kotlinx.coroutines.flow.Flow
 
 interface IArticleDataSource {
+    /**
+     * Saves [articles] and returns those([articles]) saved successfully wrapped in [TaskResult]
+     */
     suspend fun saveArticles(vararg articles: Article): TaskResult<List<Article>>
 
     suspend fun getArticles(searchQuery: String? = null): TaskResult<List<Article>>

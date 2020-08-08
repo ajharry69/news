@@ -30,6 +30,7 @@ class ArticlesRepository @Inject constructor(
     override suspend fun getArticles(searchQuery: String?) = withContext(ioDispatcher) {
         remote.getArticles(searchQuery).run {
             local.saveArticles(*listData.toTypedArray())
+            local.getArticles(searchQuery)
         }
     }
 
