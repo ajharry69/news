@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ThemeOverlay.Xently.AppBarLayout" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <style name="ThemeOverlay.Xently.Popup" parent="ThemeOverlay.MaterialComponents.Dark" />
+
+    <style name="ThemeOverlay.Xently.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <!-- Very Important! Dictates the color of option menu items -->
+        <item name="android:textViewStyle">@style/TextAppearance.AppCompat.Widget.ActionBar.Title
+        </item>
+    </style>
+
+    <style name="ThemeOverlay.Xently.Popup.Toolbar">
+        <item name="android:textViewStyle">@style/TextAppearance.MaterialComponents.Subtitle2</item>
+    </style>
+</resources>

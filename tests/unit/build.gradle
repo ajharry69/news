@@ -1,0 +1,40 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion sdk_version
+    buildToolsVersion build_tools_version
+
+    defaultConfig {
+        minSdkVersion min_sdk_version
+        targetSdkVersion sdk_version
+        versionCode version_code
+        versionName version_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    api project(path: ':tests:common')
+
+    // Local(Unit) tests
+    api "junit:junit:$junit_version"
+    api "org.hamcrest:hamcrest-all:$hamcrest_version"
+    api "androidx.arch.core:core-testing:$arch_core_testing_version"
+    api "org.robolectric:robolectric:$robolectric_version"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
+    api "androidx.test:core-ktx:$android_core_ktx_version"
+    api "androidx.test.ext:junit:$android_junit_version"
+    api "androidx.room:room-testing:$room_version"
+    api "com.google.dagger:hilt-android-testing:$hilt_version"
+    api "androidx.work:work-testing:$work_version"
+}
