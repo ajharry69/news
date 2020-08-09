@@ -50,7 +50,7 @@ class ArticlesRepository @Inject constructor(
             LOCAL -> local.getObservableArticles(searchQuery, source)
         }
 
-    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article?> = when (source) {
+    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article> = when (source) {
         REMOTE -> remote.getObservableArticle(id, source)
         LOCAL -> local.getObservableArticle(id, source)
     }

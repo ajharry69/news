@@ -11,7 +11,11 @@ import com.xently.common.data.source.remote.BaseRemoteDataSource
 import com.xently.news.data.model.Article
 import com.xently.news.data.source.IArticleDataSource
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flowOf
 import java.util.Locale.ROOT
 import javax.inject.Inject
 
@@ -45,10 +49,13 @@ class ArticleRemoteDataSource @Inject constructor(
         }.asFlow()
     }
 
-    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article?> {
-        return Transformations.map(observableArticles){ articles ->
+    @FlowPreview
+    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article> {
+        return Transformations.map(observableArticles) { articles ->
             articles.firstOrNull { it.id == id }
-        }.asFlow()
+        }.asFlow().flatMapConcat {
+            if (it == null) emptyFlow() else flowOf(it)
+        }
     }
 
     private fun <T : TaskResult<List<Article>>> T.updateObservableArticles() = this.apply {

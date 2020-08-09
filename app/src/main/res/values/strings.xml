@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">News</string>
+    <string name="content_desc_logo">logo</string>
+    <string name="search_duration">Duration (%1$s)</string>
+    <string name="articles_results">Articles (%1$d)</string>
+    <string name="status_searching_articles">Searching articles…</string>
+    <string name="status_searching_remote_articles">Searching remote articles…</string>
+    <string name="status_loading">Loading, please wait…</string>
+    <string name="status_fetching_remote_articles">Fetching articles from internet…</string>
+    <string name="status_articles_empty">No article(s) found with the search parameters…</string>
+    <string name="search_articles">Search articles…</string>
+    <string name="place_holder_content">
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+        Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s,
+        when an unknown printer took a galley of type and scrambled it to make a type
+        specimen book. It has survived not only five centuries, but also the leap into
+        electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s
+        with the release of Letraset sheets containing Lorem Ipsum passages, and more
+        recently with desktop publishing software like Aldus PageMaker including
+        versions of Lorem Ipsum.
+    </string>
+    <string name="content_desc_media">news media</string>
+    <string name="share">Share</string>
+    <string name="bookmark">Bookmark</string>
 </resources>

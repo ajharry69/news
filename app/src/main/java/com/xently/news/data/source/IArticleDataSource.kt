@@ -20,5 +20,5 @@ interface IArticleDataSource {
         source: Source = Source.LOCAL
     ): Flow<List<Article>>
 
-    suspend fun getObservableArticle(id: Long, source: Source = Source.LOCAL): Flow<Article?>
+    suspend fun getObservableArticle(id: Long, source: Source = Source.LOCAL): Flow<Article>
 }

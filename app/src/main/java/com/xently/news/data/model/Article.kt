@@ -2,6 +2,7 @@ package com.xently.news.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -27,10 +28,16 @@ data class Article(
         "yyyy-MM-dd'T'HH:mm:ss.SZ",
         Locale.getDefault()
     ).format(Date()),
+    @Embedded
+    val author: Author = Author(),
     @Ignore
     @SerializedName("media_urls")
     val media: List<Media> = emptyList()
 ) : Parcelable {
+
+    val subHeadline: String
+        @Ignore
+        get() = "${author.name ?: ""} $publicationDate".trimStart()
 
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
@@ -39,6 +46,7 @@ data class Article(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
+        parcel.readParcelable<Author>(Author::class.java.classLoader) ?: Author(),
         parcel.createTypedArrayList(Media) ?: emptyList()
     )
 
@@ -76,6 +84,7 @@ data class Article(
             writeString(publicationDate)
             writeString(creationTime)
             writeString(updateTime)
+            writeParcelable(author, flags)
             writeTypedList(media)
         }
     }

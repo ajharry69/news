@@ -21,11 +21,12 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-@InstallIn(ApplicationComponent::class)
 @Module
+@InstallIn(ApplicationComponent::class)
 object NetworkModule {
     @Provides
     @Singleton
+    @RequestHeadersInterceptor
     fun provideRequestHeadersInterceptors(@EncryptedSharedPreference preferences: SharedPreferences): Interceptor {
         return Interceptor { chain ->
             val authorization = preferences.getString(TOKEN_VALUE_SHARED_PREFERENCE_KEY, "")
@@ -74,7 +75,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000/")
+            .baseUrl("http://10.0.2.2:8000/api/v1/")
             .addConverterFactory(GsonConverterFactory.create(JSON_CONVERTER))
             .client(okHttpClient)
             .build()

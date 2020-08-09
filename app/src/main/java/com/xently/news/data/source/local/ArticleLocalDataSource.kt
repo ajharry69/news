@@ -39,6 +39,6 @@ class ArticleLocalDataSource @Inject constructor(private val dao: ArticleDAO) : 
         return articles.map { articleList -> articleList.map { it.article } }
     }
 
-    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article?> =
+    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article> =
         dao.getObservableArticle(id).map { it.article }
 }
