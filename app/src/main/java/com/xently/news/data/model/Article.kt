@@ -1,5 +1,7 @@
 package com.xently.news.data.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -17,7 +19,72 @@ data class Article(
         "yyyy-MM-dd",
         Locale.getDefault()
     ).format(Date()),
+    var creationTime: String = SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss.SZ",
+        Locale.getDefault()
+    ).format(Date()),
+    var updateTime: String = SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss.SZ",
+        Locale.getDefault()
+    ).format(Date()),
     @Ignore
     @SerializedName("media_urls")
     val media: List<Media> = emptyList()
-)
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.createTypedArrayList(Media) ?: emptyList()
+    )
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + headline.hashCode()
+        result = 31 * result + content.hashCode()
+        result = 31 * result + publicationDate.hashCode()
+        result = 31 * result + creationTime.hashCode()
+        result = 31 * result + updateTime.hashCode()
+        result = 31 * result + media.hashCode()
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Article) return false
+
+        if (id != other.id) return false
+        if (headline != other.headline) return false
+        if (content != other.content) return false
+        if (publicationDate != other.publicationDate) return false
+        if (publicationDate != other.creationTime) return false
+        if (publicationDate != other.updateTime) return false
+        if (media != other.media) return false
+
+        return true
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.run {
+            writeLong(id)
+            writeString(headline)
+            writeString(content)
+            writeString(publicationDate)
+            writeString(creationTime)
+            writeString(updateTime)
+            writeTypedList(media)
+        }
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<Article> {
+        override fun createFromParcel(parcel: Parcel): Article = Article(parcel)
+
+        override fun newArray(size: Int): Array<Article?> = arrayOfNulls(size)
+    }
+}

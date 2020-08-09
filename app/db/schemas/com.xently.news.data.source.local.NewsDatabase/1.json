@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ff0f2f3fd7310717f60be234d0a0a461",
+    "identityHash": "c337aedfa9f6d4d9c4d42f553dd9269e",
     "entities": [
       {
         "tableName": "articles",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, `creationTime` TEXT NOT NULL, `updateTime` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -29,6 +29,18 @@
           {
             "fieldPath": "publicationDate",
             "columnName": "publicationDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "creationTime",
+            "columnName": "creationTime",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updateTime",
+            "columnName": "updateTime",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -157,7 +169,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff0f2f3fd7310717f60be234d0a0a461')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c337aedfa9f6d4d9c4d42f553dd9269e')"
     ]
   }
 }

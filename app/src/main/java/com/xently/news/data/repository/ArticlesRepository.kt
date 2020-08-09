@@ -11,6 +11,7 @@ import com.xently.news.di.qualifiers.LocalArticlesDataSource
 import com.xently.news.di.qualifiers.RemoteArticlesDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -49,7 +50,7 @@ class ArticlesRepository @Inject constructor(
             LOCAL -> local.getObservableArticles(searchQuery, source)
         }
 
-    override suspend fun getObservableArticle(id: Long, source: Source) = when (source) {
+    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article?> = when (source) {
         REMOTE -> remote.getObservableArticle(id, source)
         LOCAL -> local.getObservableArticle(id, source)
     }
