@@ -37,7 +37,7 @@ public abstract class SearchableActivity extends AppCompatActivity implements On
         this.searchData = searchData;
     }
 
-    abstract void onSearchIntentReceived(@NonNull String query, @Nullable Bundle searchData);
+    public abstract void onSearchIntentReceived(@NonNull String query, @Nullable Bundle searchData);
 
     private void handleIntent(@Nullable Intent intent) {
         if (intent == null) return;

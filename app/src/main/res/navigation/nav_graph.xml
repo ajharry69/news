@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dest_splash">
+
+    <fragment
+        android:id="@+id/dest_splash"
+        android:name="com.xently.news.ui.splash.SplashFragment"
+        android:label="@null"
+        tools:layout="@layout/splash_fragment">
+        <action
+            android:id="@+id/action_dest_splash_to_dest_article_list"
+            app:destination="@id/dest_article_list"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/dest_splash"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dest_article_list"
+        android:name="com.xently.news.ui.list.ArticleListFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/article_list_fragment">
+        <action
+            android:id="@+id/action_dest_article_list_to_dest_article_details"
+            app:destination="@id/dest_article_details"
+            app:launchSingleTop="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dest_article_details"
+        android:name="com.xently.news.ui.details.ArticleFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/article_fragment" />
+
+</navigation>
