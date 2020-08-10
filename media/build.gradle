@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion sdk_version
+    buildToolsVersion build_tools_version
+
+    defaultConfig {
+        minSdkVersion min_sdk_version
+        targetSdkVersion sdk_version
+        versionCode version_code
+        versionName version_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation project(path: ':common')
+
+    // Exoplayer
+    api "com.google.android.exoplayer:exoplayer-core:$exo_player_version"
+    api "com.google.android.exoplayer:exoplayer-dash:$exo_player_version"
+    api "com.google.android.exoplayer:exoplayer-ui:$exo_player_version"
+
+    // Unit tests
+    testImplementation project(path: ':tests:unit')
+    kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // Instrumentation/UI tests
+    androidTestImplementation project(path: ':tests:ui')
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+    // Testing code should not be included in the main code.
+    // Once https://issuetracker.google.com/128612536 is fixed this can be fixed.
+    debugImplementation("androidx.fragment:fragment-testing:$fragment_version") {
+        exclude group: 'androidx.test', module: 'core'
+    }
+
+}

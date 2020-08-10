@@ -1,3 +1,4 @@
+include ':media'
 include ':utilities:viewext'
 include ':utilities:ui'
 include ':tests:common'
