@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -35,21 +36,46 @@
                 android:padding="16dp">
 
                 <!-- Title, secondary and supporting text -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{article.headline}"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    tools:text="What is Lorem Ipsum?" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{article.subHeadline}"
-                    android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
-                    tools:text="John Doe 2020-08-09" />
+                    <TextView
+                        android:id="@+id/headline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{article.headline}"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        app:layout_constraintBottom_toTopOf="@id/sub_headline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="What is Lorem Ipsum?" />
+
+                    <TextView
+                        android:id="@+id/sub_headline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@{article.subHeadline}"
+                        android:textAppearance="?attr/textAppearanceBody2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/headline"
+                        app:layout_constraintTop_toBottomOf="@id/headline"
+                        tools:text="John Doe 2020-08-09" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/author_photo"
+                        android:layout_width="60dp"
+                        android:layout_height="0dp"
+                        app:civ_border_color="?attr/colorOnSurface"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintBottom_toBottomOf="@id/sub_headline"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/headline"
+                        app:srcCompat="@drawable/ic_avatar"
+                        tools:src="@drawable/ic_avatar" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

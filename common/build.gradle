@@ -82,7 +82,8 @@ dependencies {
     // Glide
     api "com.github.bumptech.glide:glide:$glide_version"
 
-    // Utilities
+    // Utilities & Others
+    api 'de.hdodenhof:circleimageview:3.1.0'
     api project(path: ':utilities:ui')
     api project(path: ':utilities:viewext')
 

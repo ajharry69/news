@@ -33,12 +33,12 @@ buildscript {
         logging_interceptor_version = '4.8.0'
         okio_version = '2.7.0'
 
-        xui_version = '1.1.4'
+        exo_player_version = '2.11.5'
         glide_version = '4.11.0'
         joda_time_version = '2.10.6'
 
         // Test dependencies versions
-        espresso_version = '3.3.0-rc02'
+        espresso_version = '3.3.0-rc03'
         junit_version = '4.13'
         android_junit_version = '1.1.1'
         arch_core_testing_version = '2.1.0'
