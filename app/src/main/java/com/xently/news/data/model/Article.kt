@@ -42,6 +42,9 @@ data class Article(
     var bookmarked: Boolean = false
 ) : Parcelable {
 
+    val mediaUris: List<String>
+        get() = media.map { it.url }
+
     val chipDataList: List<ChipData>
         get() = tags.map { ChipData(it) }
 

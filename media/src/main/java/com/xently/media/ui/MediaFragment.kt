@@ -23,6 +23,7 @@ import com.xently.utilities.viewext.hideViews
 import com.xently.utilities.viewext.showViews
 import java.util.regex.Pattern
 
+@Suppress("MemberVisibilityCanBePrivate")
 open class MediaFragment : Fragment(R.layout.media_fragment) {
     private var mediaUris: Array<out Uri> = emptyArray()
     private val videoUris: Array<out Uri>

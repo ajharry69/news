@@ -39,7 +39,8 @@
                     android:id="@+id/media"
                     android:name="com.xently.media.ui.MediaFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    app:mediaUris="@{viewModel.getObservableArticle(articleId).mediaUris}" />
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
