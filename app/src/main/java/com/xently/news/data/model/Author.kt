@@ -3,13 +3,18 @@ package com.xently.news.data.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Author(val firstName: String? = null, val lastName: String? = null) : Parcelable {
+data class Author(
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val photoUrl: String? = null
+) : Parcelable {
     val name: String?
         get() = "${firstName ?: ""} ${lastName ?: ""}".run {
             if (isBlank()) null else this
         }
 
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString()
     )
@@ -18,6 +23,7 @@ data class Author(val firstName: String? = null, val lastName: String? = null) :
         parcel.run {
             writeString(firstName)
             writeString(lastName)
+            writeString(photoUrl)
         }
     }
 

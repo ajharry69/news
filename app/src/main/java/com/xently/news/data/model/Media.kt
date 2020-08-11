@@ -31,11 +31,13 @@ import androidx.room.PrimaryKey
 data class Media(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val url: String,
+    val thumbnailUrl: String? = null,
     val articleId: Long
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
         parcel.readString()!!,
+        parcel.readString(),
         parcel.readLong()
     )
 
@@ -43,6 +45,7 @@ data class Media(
         parcel.run {
             writeLong(id)
             writeString(url)
+            writeString(thumbnailUrl)
             writeLong(articleId)
         }
     }

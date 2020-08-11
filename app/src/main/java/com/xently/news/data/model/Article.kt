@@ -32,8 +32,12 @@ data class Article(
     var author: Author = Author(),
     @Ignore
     @SerializedName("media_urls")
-    val media: List<Media> = emptyList()
+    val media: List<Media> = emptyList(),
+    var url: String? = null
 ) : Parcelable {
+
+    val mediaThumbnailUrl: String?
+        get() = if (media.isEmpty()) null else media[0].thumbnailUrl
 
     val subHeadline: String
         @Ignore

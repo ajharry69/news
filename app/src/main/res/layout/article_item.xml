@@ -8,6 +8,10 @@
         <variable
             name="article"
             type="com.xently.news.data.model.Article" />
+
+        <import
+            alias="Click"
+            type="com.xently.news.ui.list.utils.ClickHandlerUtilKt" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -26,7 +30,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="194dp"
                 android:contentDescription="@string/content_desc_media"
+                android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                 android:scaleType="centerCrop"
+                app:imageFromUrl="@{article.mediaThumbnailUrl}"
+                app:isVisible="@{article.mediaThumbnailUrl != null}"
                 tools:background="@color/black_overlay" />
 
             <LinearLayout
@@ -44,6 +51,7 @@
                         android:id="@+id/headline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                         android:text="@{article.headline}"
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         app:layout_constraintBottom_toTopOf="@id/sub_headline"
@@ -69,7 +77,8 @@
                         android:layout_width="60dp"
                         android:layout_height="0dp"
                         app:civ_border_color="?attr/colorOnSurface"
-                        app:civ_border_width="2dp"
+                        app:civ_border_width="1dp"
+                        app:imageFromUrl="@{article.author.photoUrl}"
                         app:layout_constraintBottom_toBottomOf="@id/sub_headline"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/headline"
@@ -84,6 +93,7 @@
                     android:ellipsize="end"
                     android:justificationMode="inter_word"
                     android:maxLines="4"
+                    android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                     android:text="@{article.content}"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary"
@@ -104,12 +114,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:onClick="@{(v) -> Click.onShareClick(v,article)}"
                     android:text="@string/share" />
 
                 <com.google.android.material.button.MaterialButton
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="@{(v) -> Click.onAddBookmarkClick(v,article)}"
                     android:text="@string/bookmark" />
             </LinearLayout>
 
