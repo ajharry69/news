@@ -86,15 +86,6 @@ object Log {
 
 fun isReleaseBuild() = BuildConfig.BUILD_TYPE.toLowerCase(Locale.ROOT).contains(Regex("^release$"))
 
-val IMAGE_FORMATS = setOf(
-    "bmp", "dib", "gif", "tif", "tiff", "jfif", "jpe", "jpg", "jpeg", "pbm", "pgm", "ppm", "pnm",
-    "png", "apng", "blp", "bufr", "cur", "pcx", "dcx", "dds", "ps", "eps", "fit", "fits", "fli",
-    "flc", "ftc", "ftu", "gbr", "grib", "h5", "hdf", "jp2", "j2k", "jpc", "jpf", "jpx", "j2c",
-    "icns", "ico", "im", "iim", "mpg", "mpeg", "mpo", "msp", "palm", "pcd", "pdf", "pxr", "psd",
-    "bw", "rgb", "rgba", "sgi", "ras", "tga", "icb", "vda", "vst", "webp", "wmf", "emf", "xbm",
-    "xpm"
-)
-
 fun <T: Service> isServiceRunning(context: Context, clazz: Class<T>): Boolean {
     val manager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
     for (service in manager.getRunningServices(Int.MAX_VALUE)) {

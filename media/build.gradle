@@ -11,6 +11,7 @@ android {
         targetSdkVersion sdk_version
         versionCode version_code
         versionName version_name
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -22,6 +23,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = jvm_target_version
+            freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        def srcDir = 'src/sharedTest/java'
+        test {
+            java.srcDirs += srcDir
+        }
+        androidTest {
+            java.srcDirs += srcDir
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true // required to not break unit tests
+        }
+    }
 }
 
 dependencies {
@@ -31,6 +61,7 @@ dependencies {
     api "com.google.android.exoplayer:exoplayer-core:$exo_player_version"
     api "com.google.android.exoplayer:exoplayer-dash:$exo_player_version"
     api "com.google.android.exoplayer:exoplayer-ui:$exo_player_version"
+    implementation 'com.github.smarteist:autoimageslider:1.3.9'
 
     // Unit tests
     testImplementation project(path: ':tests:unit')

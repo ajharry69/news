@@ -14,6 +14,8 @@ android {
         versionCode version_code
         versionName version_name
         applicationId "com.xently.news"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "com.xently.shoppingassistant.utils.XentlyShoppingTestRunner"
         kapt {

@@ -29,7 +29,7 @@ data class Article(
         Locale.getDefault()
     ).format(Date()),
     @Embedded
-    val author: Author = Author(),
+    var author: Author = Author(),
     @Ignore
     @SerializedName("media_urls")
     val media: List<Media> = emptyList()
