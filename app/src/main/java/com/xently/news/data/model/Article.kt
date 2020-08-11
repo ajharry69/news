@@ -7,6 +7,8 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.xently.common.utils.Exclude
+import com.xently.news.ui.utils.ChipData
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,8 +35,15 @@ data class Article(
     @Ignore
     @SerializedName("media_urls")
     val media: List<Media> = emptyList(),
-    var url: String? = null
+    @Ignore
+    val tags: List<String> = emptyList(),
+    var url: String? = null,
+    @Exclude
+    var bookmarked: Boolean = false
 ) : Parcelable {
+
+    val chipDataList: List<ChipData>
+        get() = tags.map { ChipData(it) }
 
     val mediaThumbnailUrl: String?
         get() = if (media.isEmpty()) null else media[0].thumbnailUrl

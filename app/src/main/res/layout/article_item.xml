@@ -74,7 +74,7 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/author_photo"
-                        android:layout_width="60dp"
+                        android:layout_width="@dimen/avatar_dimension"
                         android:layout_height="0dp"
                         app:civ_border_color="?attr/colorOnSurface"
                         app:civ_border_width="1dp"
@@ -122,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="@{(v) -> Click.onAddBookmarkClick(v,article)}"
-                    android:text="@string/bookmark" />
+                    android:text="@string/add_bookmark" />
             </LinearLayout>
 
         </LinearLayout>

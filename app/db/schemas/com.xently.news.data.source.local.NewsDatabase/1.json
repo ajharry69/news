@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2f9db97865af4ca18037db17074b5892",
+    "identityHash": "f8eae1fe1dd16115bc8c66568b4420f7",
     "entities": [
       {
         "tableName": "articles",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, `creationTime` TEXT NOT NULL, `updateTime` TEXT NOT NULL, `url` TEXT, `firstName` TEXT, `lastName` TEXT, `photoUrl` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, `creationTime` TEXT NOT NULL, `updateTime` TEXT NOT NULL, `url` TEXT, `bookmarked` INTEGER NOT NULL, `firstName` TEXT, `lastName` TEXT, `photoUrl` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -49,6 +49,12 @@
             "columnName": "url",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "bookmarked",
+            "columnName": "bookmarked",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "author.firstName",
@@ -199,7 +205,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2f9db97865af4ca18037db17074b5892')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8eae1fe1dd16115bc8c66568b4420f7')"
     ]
   }
 }

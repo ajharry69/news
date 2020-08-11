@@ -18,6 +18,11 @@ class ArticleLocalDataSource @Inject constructor(private val dao: ArticleDAO) : 
         }
     }
 
+    override suspend fun addBookMark(articleId: Long, bookmark: Boolean): TaskResult<Boolean> {
+        val isBookmarked = dao.addBookMark(articleId, bookmark) > 0
+        return if (isBookmarked) Success(isBookmarked && bookmark) else Error(Exception("Error adding bookmark"))
+    }
+
     override suspend fun getArticles(searchQuery: String?): TaskResult<List<Article>> {
         val articles =
             if (searchQuery.isNullOrBlank()) dao.getArticles() else dao.getArticles(searchQuery)

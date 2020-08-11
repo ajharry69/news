@@ -11,6 +11,8 @@ interface IArticleDataSource {
      */
     suspend fun saveArticles(vararg articles: Article): TaskResult<List<Article>>
 
+    suspend fun addBookMark(articleId: Long, bookmark: Boolean): TaskResult<Boolean>
+
     suspend fun getArticles(searchQuery: String? = null): TaskResult<List<Article>>
 
     suspend fun getArticle(id: Long): TaskResult<Article>

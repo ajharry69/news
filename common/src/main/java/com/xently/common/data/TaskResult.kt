@@ -5,7 +5,9 @@ sealed class TaskResult<out R> {
         override fun toString(): String = super.toString()
     }
 
-    data class Error(val error: Exception) : TaskResult<Nothing>()
+    data class Error(val error: Throwable) : TaskResult<Nothing>() {
+        constructor(error: String) : this(Exception(error))
+    }
 
     companion object Loading : TaskResult<Nothing>()
 

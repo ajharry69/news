@@ -28,6 +28,13 @@ class ArticlesRepository @Inject constructor(
         }
     }
 
+    override suspend fun addBookMark(articleId: Long, bookmark: Boolean) =
+        withContext(ioDispatcher) {
+            remote.addBookMark(articleId, bookmark).run {
+                local.addBookMark(articleId, bookmark)
+            }
+        }
+
     override suspend fun getArticles(searchQuery: String?) = withContext(ioDispatcher) {
         remote.getArticles(searchQuery).run {
             local.saveArticles(*listData.toTypedArray())
@@ -50,8 +57,9 @@ class ArticlesRepository @Inject constructor(
             LOCAL -> local.getObservableArticles(searchQuery, source)
         }
 
-    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article> = when (source) {
-        REMOTE -> remote.getObservableArticle(id, source)
-        LOCAL -> local.getObservableArticle(id, source)
-    }
+    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article> =
+        when (source) {
+            REMOTE -> remote.getObservableArticle(id, source)
+            LOCAL -> local.getObservableArticle(id, source)
+        }
 }

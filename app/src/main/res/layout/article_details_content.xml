@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="articleId"
+            type="Long" />
+
+        <variable
+            name="viewModel"
+            type="com.xently.news.ui.details.ArticleViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/screen_edge_margin">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/author_photo"
+                android:layout_width="@dimen/avatar_dimension"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                app:civ_border_color="?attr/colorOnSurface"
+                app:civ_border_width="1dp"
+                app:imageFromUrl="@{viewModel.getObservableArticle(articleId).author.photoUrl}"
+                app:layout_constraintBottom_toBottomOf="@id/sub_headline"
+                app:layout_constraintEnd_toStartOf="@id/headline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/headline"
+                app:srcCompat="@drawable/ic_avatar"
+                tools:src="@drawable/ic_avatar" />
+
+            <TextView
+                android:id="@+id/headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{viewModel.getObservableArticle(articleId).author.name}"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                app:layout_constraintBottom_toTopOf="@id/sub_headline"
+                app:layout_constraintStart_toEndOf="@id/author_photo"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="John Doe" />
+
+            <TextView
+                android:id="@+id/sub_headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@{viewModel.getObservableArticle(articleId).publicationDate}"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintBottom_toTopOf="@id/content"
+                app:layout_constraintStart_toStartOf="@id/headline"
+                app:layout_constraintTop_toBottomOf="@id/headline"
+                tools:text="2020-08-09" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@{viewModel.getObservableArticle(articleId).content}"
+                app:layout_constraintBottom_toTopOf="@id/tags_scroll_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sub_headline"
+                tools:text="@string/place_holder_content" />
+
+            <HorizontalScrollView
+                android:id="@+id/tags_scroll_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:isVisible="@{viewModel.getObservableArticle(articleId).chipDataList.size() > 0}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content"
+                tools:visibility="visible">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipItems="@{viewModel.getObservableArticle(articleId).chipDataList}"
+                    app:singleLine="true" />
+            </HorizontalScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

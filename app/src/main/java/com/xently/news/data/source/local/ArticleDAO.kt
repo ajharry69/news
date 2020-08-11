@@ -10,6 +10,9 @@ interface ArticleDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveArticles(vararg articles: Article): Array<Long>
 
+    @Query("UPDATE articles SET bookmarked = :bookmark WHERE id = :articleId")
+    suspend fun addBookMark(articleId: Long, bookmark: Boolean): Int
+
     @Transaction
     @Query("SELECT * FROM articles ORDER BY publicationDate DESC")
     fun getArticles(): List<ArticleWithMedia>
