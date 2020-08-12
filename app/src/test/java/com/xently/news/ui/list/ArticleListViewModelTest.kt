@@ -17,8 +17,10 @@ import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.fakes.FakeArticleDataSource
 import com.xently.tests.unit.getOrAwaitValue
+import com.xently.tests.unit.getValueOrWait
 import com.xently.tests.unit.rules.MainCoroutineRule
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Before
@@ -55,13 +57,6 @@ class ArticleListViewModelTest {
     fun showProgressbar() {
         // show progress bar is false by default
         assertThat(viewModel.showProgressbar.getOrAwaitValue(), `is`(false))
-
-    }
-
-    @Test
-    fun filteredResultsCount() {
-        // filtered results count is ZERO by default
-        assertThat(viewModel.filteredResultsCount.getOrAwaitValue(), equalTo(0))
     }
 
     @Test
@@ -112,20 +107,25 @@ class ArticleListViewModelTest {
     }
 
     @Test
-    fun `getObservableArticles with a searchQuery provided sets appropriate statusMessage depending on the requested data source`() {
-        assertStatusMessage(REMOTE, R.string.status_searching_remote_articles)
-        assertStatusMessage(LOCAL, R.string.status_searching_articles)
+    fun `getObservableArticles with a searchQuery provided sets appropriate statusMessage depending on the requested data source`() =
+        runBlockingTest {
+            assertStatusMessage(REMOTE, R.string.status_searching_remote_articles)
+            assertStatusMessage(LOCAL, R.string.status_searching_articles)
+        }
+
+    @Test
+    fun observableArticles() = runBlockingTest {
+        assertThat(viewModel.articleLists.getValueOrWait()!!.size, greaterThan(0))
     }
 
-    private fun assertStatusMessage(source: Source, @StringRes message: Int) {
-        mainCoroutineRule.pauseDispatcher()
-        viewModel.getObservableArticles("search query", source)
-
+    private suspend fun assertStatusMessage(source: Source, @StringRes message: Int) {
+        viewModel.searchQuery.offer("search query")
+        viewModel.dataSource.offer(source)
+        viewModel.articleLists.getValueOrWait()
         assertThat(
             viewModel.statusMessage.getOrAwaitValue(),
             equalToIgnoringCase(viewModel.context.getString(message))
         )
-        mainCoroutineRule.resumeDispatcher()
     }
 
     companion object {

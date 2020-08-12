@@ -113,3 +113,12 @@ data class Article(
         override fun newArray(size: Int): Array<Article?> = arrayOfNulls(size)
     }
 }
+
+fun Collection<Article>.ftsFilter(query: String?): List<Article> {
+    return if (query.isNullOrBlank()) toList() else {
+        filter {
+            it.content.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+                    || it.headline.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+        }
+    }
+}

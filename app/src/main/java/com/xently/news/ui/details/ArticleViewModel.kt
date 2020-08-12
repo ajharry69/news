@@ -6,7 +6,6 @@ import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.news.data.model.Article
 import com.xently.news.data.repository.IArticlesRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
@@ -46,7 +45,6 @@ class ArticleViewModel @ViewModelInject constructor(private val repository: IArt
     }
 
     @JvmOverloads
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun getObservableArticle(id: Long, source: Source = Source.LOCAL): LiveData<Article> {
         val observableArticle = liveData<Article> {
             repository.getObservableArticle(id, source).onEmpty {

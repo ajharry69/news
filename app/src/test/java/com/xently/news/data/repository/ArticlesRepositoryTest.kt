@@ -14,6 +14,7 @@ import com.xently.news.data.source.IArticleDataSource
 import com.xently.news.fakes.FakeArticleDataSource
 import com.xently.tests.unit.assertDataEqual
 import com.xently.tests.unit.assertDataNotNullValue
+import com.xently.tests.unit.getValueOrWait
 import com.xently.tests.unit.rules.MainCoroutineRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runBlockingTest
@@ -140,13 +141,21 @@ class ArticlesRepositoryTest {
                 assertThat(expectItem(), contains(articleSearched))
                 cancelAndIgnoreRemainingEvents()
             }
-            repository.getObservableArticles("Uniqu123", LOCAL).test(validate = validate)
-            // search is case insensitive
-            repository.getObservableArticles("unIqU123", LOCAL).test(validate = validate)
-            // unmatched item
-            repository.getObservableArticles("random unknown article content", LOCAL).test {
-                assertThat(expectItem().size, equalTo(0))
-                cancelAndIgnoreRemainingEvents()
+            repository.run {
+                getObservableArticles("Uniqu123", LOCAL).run {
+                    assertThat(getValueOrWait(), contains(articleSearched))
+                    test(validate = validate)
+                }
+                // search is case insensitive
+                getObservableArticles("unIqU123", LOCAL).run {
+                    assertThat(getValueOrWait(), contains(articleSearched))
+                    test(validate = validate)
+                }
+                // unmatched item
+                getObservableArticles("random unknown article content", LOCAL).test {
+                    assertThat(expectItem().size, equalTo(0))
+                    cancelAndIgnoreRemainingEvents()
+                }
             }
         }
 
