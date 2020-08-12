@@ -7,6 +7,7 @@ import com.xently.common.data.TaskResult
 import com.xently.news.data.model.Article
 import com.xently.news.data.repository.IArticlesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
 
@@ -25,6 +26,18 @@ class ArticleViewModel @ViewModelInject constructor(private val repository: IArt
     val showProgressbar: LiveData<Boolean>
         get() = _showProgressbar
 
+    private val taskResultObserver: (TaskResult<Any>) -> Unit = {
+        _showProgressbar.value = it is TaskResult.Loading
+        if (it is TaskResult.Success && it.data is Article){
+            _article.value = it.data as Article
+        }
+    }
+
+    init {
+        _articleFetchResult.observeForever(taskResultObserver)
+        _addBookmarkResult.observeForever(taskResultObserver)
+    }
+
     fun addBookmark(articleId: Long, bookmark: Boolean) {
         _addBookmarkResult.value = TaskResult.Loading
         viewModelScope.launch {
@@ -36,15 +49,30 @@ class ArticleViewModel @ViewModelInject constructor(private val repository: IArt
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getObservableArticle(id: Long, source: Source = Source.LOCAL): LiveData<Article> {
         val observableArticle = liveData<Article> {
-            val article = repository.getObservableArticle(id, source).onEmpty {
-                _articleFetchResult.value = TaskResult.Loading
-                _articleFetchResult.value = repository.getArticle(id)
+            repository.getObservableArticle(id, source).onEmpty {
+                getArticle(id)
+            }.catch {
+                getArticle(id)
             }
-            emitSource(article.asLiveData())
         }
         return Transformations.map(observableArticle) {
+            // FIXME: 8/12/20 could be a repeat of Flow above
+            if (it == null) getArticle(id)
             _article.value = it
             it
         }
+    }
+
+    fun getArticle(id: Long) {
+        _articleFetchResult.value = TaskResult.Loading
+        viewModelScope.launch {
+            _articleFetchResult.value = repository.getArticle(id)
+        }
+    }
+
+    override fun onCleared() {
+        _articleFetchResult.removeObserver(taskResultObserver)
+        _addBookmarkResult.removeObserver(taskResultObserver)
+        super.onCleared()
     }
 }

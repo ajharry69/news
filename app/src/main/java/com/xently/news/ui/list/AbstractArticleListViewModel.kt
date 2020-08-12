@@ -1,9 +1,13 @@
 package com.xently.news.ui.list
 
 import android.app.Application
+import android.content.Context
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.xently.common.data.Source
+import com.xently.common.data.Source.LOCAL
+import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult
 import com.xently.common.data.errorMessage
 import com.xently.news.R
@@ -17,7 +21,9 @@ abstract class AbstractArticleListViewModel internal constructor(
     protected val repository: IArticlesRepository,
     app: Application
 ) : AndroidViewModel(app) {
-    private val context = app.applicationContext
+
+    @VisibleForTesting
+    val context: Context = app.applicationContext
     private val _articleListsResults = MutableLiveData<TaskResult<List<Article>>>()
     val articleListsResults: LiveData<TaskResult<List<Article>>>
         get() = _articleListsResults
@@ -36,32 +42,34 @@ abstract class AbstractArticleListViewModel internal constructor(
     val statusMessage: LiveData<String>
         get() = _statusMessage
 
-    init {
-        _articleListsResults.observeForever {
-            when (it) {
-                is TaskResult.Success -> {
-                    _showProgressbar.value = false
-                    val message = if (it.data.isNullOrEmpty()) R.string.status_articles_empty
-                    else R.string.status_loading
-                    _statusMessage.value = context.getString(message)
-                }
-                is TaskResult.Error -> {
-                    _showProgressbar.value = false
-                    _statusMessage.value = it.errorMessage
-                }
-                is TaskResult.Loading -> {
-                    _showProgressbar.value = true
-                    _statusMessage.value =
-                        context.getString(R.string.status_fetching_remote_articles)
-                }
+    private val articleListTaskResultsObserver: (TaskResult<List<Article>>) -> Unit = {
+        when (it) {
+            is TaskResult.Success -> {
+                _showProgressbar.value = false
+                val message = if (it.data.isNullOrEmpty()) R.string.status_articles_empty
+                else R.string.status_loading
+                _statusMessage.value = context.getString(message)
+            }
+            is TaskResult.Error -> {
+                _showProgressbar.value = false
+                _statusMessage.value = it.errorMessage
+            }
+            is TaskResult.Loading -> {
+                _showProgressbar.value = true
+                _statusMessage.value =
+                    context.getString(R.string.status_fetching_remote_articles)
             }
         }
     }
 
+    init {
+        _articleListsResults.observeForever(articleListTaskResultsObserver)
+    }
+
     fun getArticles(searchQuery: String? = null) {
         _articleListsResults.value = TaskResult.Loading
+        updateStatusMessageOnSearch(searchQuery, R.string.status_searching_remote_articles)
         viewModelScope.launch {
-            updateStatusMessageOnSearch(searchQuery, R.string.status_searching_remote_articles)
             _articleListsResults.value = repository.getArticles(searchQuery)
         }
     }
@@ -69,21 +77,30 @@ abstract class AbstractArticleListViewModel internal constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getObservableArticles(
         searchQuery: String? = null,
-        source: Source = Source.LOCAL
+        source: Source = LOCAL
     ): LiveData<List<Article>> {
+        val message = when (source) {
+            REMOTE -> R.string.status_searching_remote_articles
+            LOCAL -> R.string.status_searching_articles
+        }
+        updateStatusMessageOnSearch(searchQuery, message)
         val articleLists = liveData<List<Article>> {
-            updateStatusMessageOnSearch(searchQuery)
-            val articles = repository.getObservableArticles(searchQuery, source).onEmpty {
+            repository.getObservableArticles(searchQuery, source).onEmpty {
                 // fetch articles from internet if is empty
                 // TODO: Make sure it does not result to an infinite loop
                 getArticles(searchQuery)
             }
-            emitSource(articles.asLiveData())
         }
         return Transformations.map(articleLists) {
+            if (it.isNullOrEmpty()) getArticles(searchQuery)
             _filteredResultsCount.value = it.size
             it
         }
+    }
+
+    override fun onCleared() {
+        _articleListsResults.removeObserver(articleListTaskResultsObserver)
+        super.onCleared()
     }
 
     private fun updateStatusMessageOnSearch(

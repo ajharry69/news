@@ -23,7 +23,7 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.P])
-@Ignore("Can't seem to be able to test Room DAOs with FTS tables")
+@Ignore("Unable to test Room DAOs when FTS entities(tables) are present in DB")
 class ArticleDAOTest {
 
     @get:Rule
