@@ -40,7 +40,11 @@ android {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         kotlinOptions {
             jvmTarget = jvm_target_version
-            freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
+            freeCompilerArgs += [
+                    "-Xuse-experimental=kotlin.Experimental",
+                    '-Xopt-in=kotlin.time.ExperimentalTime',
+                    '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+            ]
         }
     }
 
