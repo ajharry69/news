@@ -12,7 +12,7 @@ import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.source.IArticleDataSource
 import com.xently.news.fakes.FakeArticleDataSource
 import com.xently.tests.unit.getOrAwaitValue
-import com.xently.tests.unit.getValueOrWait
+import com.xently.tests.unit.getValueOrAwaitFlowValue
 import com.xently.tests.unit.rules.MainCoroutineRule
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -49,7 +49,7 @@ class ArticlesFilterResultsViewModelTest {
             // count is ZERO at first because LOCAL data source contains NO value
             assertThat(viewModel.articleListCount.getOrAwaitValue(), equalTo(0))
             // this will return empty list at first which will then initiate a remote data fetch
-            viewModel.articleLists.getValueOrWait()
+            viewModel.articleLists.getValueOrAwaitFlowValue()
             // count is greater ZERO at because LOCAL cache of remote data fetched above has been stored
             assertThat(viewModel.articleListCount.getOrAwaitValue(), greaterThan(0))
         }

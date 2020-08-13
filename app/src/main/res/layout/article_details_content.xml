@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="articleId"
-            type="Long" />
-
         <variable
             name="viewModel"
             type="com.xently.news.ui.details.ArticleViewModel" />
@@ -31,7 +26,7 @@
                 android:layout_marginEnd="8dp"
                 app:civ_border_color="?attr/colorOnSurface"
                 app:civ_border_width="1dp"
-                app:imageFromUrl="@{viewModel.getObservableArticle(articleId).author.photoUrl}"
+                app:imageFromUrl="@{viewModel.article.author.photoUrl}"
                 app:layout_constraintBottom_toBottomOf="@id/sub_headline"
                 app:layout_constraintEnd_toStartOf="@id/headline"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@{viewModel.getObservableArticle(articleId).author.name}"
+                android:text="@{viewModel.article.author.name}"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 app:layout_constraintBottom_toTopOf="@id/sub_headline"
                 app:layout_constraintStart_toEndOf="@id/author_photo"
@@ -57,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="@{viewModel.getObservableArticle(articleId).publicationDate}"
+                android:text="@{viewModel.article.publicationDate}"
                 android:textAppearance="?attr/textAppearanceBody2"
                 android:textColor="?android:attr/textColorSecondary"
                 app:layout_constraintBottom_toTopOf="@id/content"
@@ -71,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="@{viewModel.getObservableArticle(articleId).content}"
+                android:text="@{viewModel.article.content}"
                 app:layout_constraintBottom_toTopOf="@id/tags_scroll_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
-                app:isVisible="@{viewModel.getObservableArticle(articleId).chipDataList.size() > 0}"
+                app:isVisible="@{viewModel.article.chipDataList.size() > 0}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +90,7 @@
                     android:id="@+id/tags"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:chipItems="@{viewModel.getObservableArticle(articleId).chipDataList}"
+                    app:chipItems="@{viewModel.article.chipDataList}"
                     app:singleLine="true" />
             </HorizontalScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>

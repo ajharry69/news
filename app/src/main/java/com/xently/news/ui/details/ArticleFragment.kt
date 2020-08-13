@@ -37,7 +37,6 @@ class ArticleFragment : Fragment() {
             setupToolbar(toolbar)
             lifecycleOwner = this@ArticleFragment
             viewModel = this@ArticleFragment.viewModel
-            articleId = args.articleId
         }
         return binding.root
     }
@@ -51,9 +50,10 @@ class ArticleFragment : Fragment() {
             }
         }
         viewModel.run {
+            viewModel.articleId.offer(args.articleId)
             addBookmarkResult.observe(viewLifecycleOwner, taskResultObserver)
             articleFetchResult.observe(viewLifecycleOwner, taskResultObserver)
-            getObservableArticle(args.articleId).observe(viewLifecycleOwner, Observer {
+            article.observe(viewLifecycleOwner, Observer {
                 this@ArticleFragment.article = it
             })
         }

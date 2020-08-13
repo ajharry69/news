@@ -1,16 +1,20 @@
 package com.xently.news.ui.details
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.xently.common.data.Source
+import com.xently.common.data.Source.LOCAL
+import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult.Loading
 import com.xently.news.ARTICLE
 import com.xently.news.createArticles
+import com.xently.news.data.model.Article
 import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.fakes.FakeArticleDataSource
 import com.xently.tests.unit.getOrAwaitValue
+import com.xently.tests.unit.getValueOrAwaitFlowValue
 import com.xently.tests.unit.rules.MainCoroutineRule
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Before
@@ -86,11 +90,33 @@ class ArticleViewModelTest {
     }
 
     @Test
-    fun `getArticle initializes article when an article is successfully retrieved`() {
-        viewModel.getArticle(REMOTE_ARTICLES[0].id)
+    fun `observing article from (REMOTE or LOCAL) source with an existing id returns expected Article`() =
+        runBlockingTest {
+            viewModel.run {
+                val id = REMOTE_ARTICLES[0].id
+                dataSource.offer(REMOTE)
+                articleId.offer(id)
+                assertThat(article.getValueOrAwaitFlowValue(), equalTo(REMOTE_ARTICLES[0]))
 
-        assertThat(viewModel.article.getOrAwaitValue(), equalTo(REMOTE_ARTICLES[0]))
-    }
+                getArticle(id) // will force a LOCAL data cache
+                dataSource.offer(LOCAL)
+                assertThat(article.getValueOrAwaitFlowValue(), equalTo(REMOTE_ARTICLES[0]))
+            }
+        }
+
+    @Test
+    fun `observing article from (REMOTE or LOCAL) source with an un-existing id returns null`() =
+        runBlockingTest {
+            viewModel.run {
+                val id = -123L // does not exist locally or remotely
+                dataSource.offer(REMOTE)
+                articleId.offer(id)
+                assertThat(article.getValueOrAwaitFlowValue(), nullValue(Article::class.java))
+
+                dataSource.offer(LOCAL)
+                assertThat(article.getValueOrAwaitFlowValue(), nullValue(Article::class.java))
+            }
+        }
 
     private fun assertProgressbarVisibility() {
         assertThat(viewModel.showProgressbar.getOrAwaitValue(), equalTo(true))

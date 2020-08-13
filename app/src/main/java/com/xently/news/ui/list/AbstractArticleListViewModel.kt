@@ -94,11 +94,14 @@ abstract class AbstractArticleListViewModel internal constructor(
         articleLists.observeForever(observableArticleListObserver)
     }
 
+    /**
+     * Fetch article(s) remotely
+     */
     fun getArticles(searchQuery: String? = null) {
-        _articleListsResults.value = TaskResult.Loading
+        _articleListsResults.postValue(TaskResult.Loading)
         updateStatusMessageOnSearch(searchQuery, R.string.status_searching_remote_articles)
         viewModelScope.launch {
-            _articleListsResults.value = repository.getArticles(searchQuery)
+            _articleListsResults.postValue(repository.getArticles(searchQuery))
         }
     }
 

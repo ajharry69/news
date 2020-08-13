@@ -9,10 +9,10 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration
 import kotlin.time.seconds
 
-suspend fun <T> LiveData<T>.getValueOrWait(timeout: Duration = 1.seconds): T? =
+suspend fun <T> LiveData<T>.getValueOrAwaitFlowValue(timeout: Duration = 1.seconds): T? =
     withTimeoutOrNull(timeout) {
         asFlow().first()
     }
 
-suspend fun <T> Flow<T>.getValueOrWait(timeout: Duration = 1.seconds): T? =
-    asLiveData().getValueOrWait(timeout)
+suspend fun <T> Flow<T>.getValueOrAwaitFlowValue(timeout: Duration = 1.seconds): T? =
+    asLiveData().getValueOrAwaitFlowValue(timeout)

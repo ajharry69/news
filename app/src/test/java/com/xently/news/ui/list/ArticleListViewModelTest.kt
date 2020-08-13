@@ -17,7 +17,7 @@ import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.fakes.FakeArticleDataSource
 import com.xently.tests.unit.getOrAwaitValue
-import com.xently.tests.unit.getValueOrWait
+import com.xently.tests.unit.getValueOrAwaitFlowValue
 import com.xently.tests.unit.rules.MainCoroutineRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runBlockingTest
@@ -115,13 +115,13 @@ class ArticleListViewModelTest {
 
     @Test
     fun observableArticles() = runBlockingTest {
-        assertThat(viewModel.articleLists.getValueOrWait()!!.size, greaterThan(0))
+        assertThat(viewModel.articleLists.getValueOrAwaitFlowValue()!!.size, greaterThan(0))
     }
 
     private suspend fun assertStatusMessage(source: Source, @StringRes message: Int) {
         viewModel.searchQuery.offer("search query")
         viewModel.dataSource.offer(source)
-        viewModel.articleLists.getValueOrWait()
+        viewModel.articleLists.getValueOrAwaitFlowValue()
         assertThat(
             viewModel.statusMessage.getOrAwaitValue(),
             equalToIgnoringCase(viewModel.context.getString(message))

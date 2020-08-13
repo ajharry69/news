@@ -7,10 +7,6 @@
     <data>
 
         <variable
-            name="articleId"
-            type="Long" />
-
-        <variable
             name="viewModel"
             type="com.xently.news.ui.details.ArticleViewModel" />
     </data>
@@ -40,7 +36,7 @@
                     android:name="com.xently.media.ui.MediaFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:mediaUris="@{viewModel.getObservableArticle(articleId).mediaUris}" />
+                    app:mediaUris="@{viewModel.article.mediaUris}" />
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
@@ -50,14 +46,13 @@
                     android:background="@android:color/transparent"
                     app:layout_collapseMode="pin"
                     app:menu="@menu/article_details"
-                    app:title="@{viewModel.getObservableArticle(articleId).headline}"
+                    app:title="@{viewModel.article.headline}"
                     tools:title="What is Lorem Ipsum?" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <include
             layout="@layout/article_details_content"
-            bind:articleId="@{articleId}"
             bind:viewModel="@{viewModel}" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
