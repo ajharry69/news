@@ -57,4 +57,10 @@ abstract class AbstractArticleListFragment : ListFragment() {
             activity?.onSearchRequested() ?: false
         } else super.onOptionsItemSelected(item)
     }
+
+    override fun onCreateSearchIdentifier() = SEARCH_IDENTIFIER
+
+    companion object {
+        val SEARCH_IDENTIFIER: String = AbstractArticleListFragment::class.java.name
+    }
 }

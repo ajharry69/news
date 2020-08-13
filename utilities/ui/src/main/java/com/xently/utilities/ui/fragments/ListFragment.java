@@ -49,8 +49,13 @@ public class ListFragment extends Fragment {
     @Nullable
     public Bundle onCreateSearchData() {
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_KEY_SEARCH_IDENTIFIER, TAG);
+        bundle.putString(ARG_KEY_SEARCH_IDENTIFIER, onCreateSearchIdentifier());
         return bundle;
+    }
+
+    @NonNull
+    public String onCreateSearchIdentifier() {
+        return TAG;
     }
 
     public interface OnSearchDataReceivedListener {
