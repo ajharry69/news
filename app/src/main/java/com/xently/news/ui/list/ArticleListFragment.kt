@@ -11,7 +11,7 @@ class ArticleListFragment : AbstractArticleListFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
+        viewModel.searchQuery.offer(null)
     }
 
 }

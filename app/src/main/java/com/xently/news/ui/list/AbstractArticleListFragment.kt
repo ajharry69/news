@@ -3,6 +3,7 @@ package com.xently.news.ui.list
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.xently.news.R
 import com.xently.news.databinding.ArticleListFragmentBinding
 import com.xently.news.ui.list.utils.ArticlesAdapter
@@ -33,6 +34,13 @@ abstract class AbstractArticleListFragment : ListFragment() {
             articles.adapter = articlesAdapter
         }
         return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.articleLists.observe(viewLifecycleOwner, Observer {
+            articlesAdapter.submitList(it)
+        })
     }
 
     override fun onDestroyView() {
