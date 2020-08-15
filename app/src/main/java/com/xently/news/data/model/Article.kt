@@ -10,6 +10,7 @@ import com.xently.common.utils.Exclude
 import com.xently.news.ui.utils.ChipData
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Locale.ROOT
 
 @Entity(tableName = "articles")
 data class Article(
@@ -33,11 +34,11 @@ data class Article(
     var author: Author = Author(),
     @Ignore
     val media: List<Media> = emptyList(),
-    @Ignore
-    val tags: List<String> = emptyList(),
+    var tags: List<String> = emptyList(),
     var url: String? = null,
     @Exclude
-    var bookmarked: Boolean = false
+    var bookmarked: Boolean = false,
+    var mediaThumbnail: String? = null
 ) : Parcelable {
 
     val mediaUris: List<String>
@@ -45,9 +46,6 @@ data class Article(
 
     val chipDataList: List<ChipData>
         get() = tags.map { ChipData(it) }
-
-    val mediaThumbnailUrl: String?
-        get() = if (media.isEmpty()) null else media[0].thumbnailUrl
 
     val subHeadline: String
         @Ignore
@@ -115,8 +113,8 @@ data class Article(
 fun Collection<Article>.ftsFilter(query: String?): List<Article> {
     return if (query.isNullOrBlank()) toList() else {
         filter {
-            it.content.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
-                    || it.headline.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+            it.content.toLowerCase(ROOT).contains(query.toLowerCase(ROOT))
+                    || it.headline.toLowerCase(ROOT).contains(query.toLowerCase(ROOT))
         }
     }
 }

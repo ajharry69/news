@@ -13,12 +13,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
 object SharedPreferenceModule {
     @Provides
     @EncryptedSharedPreference
+    @Singleton
     fun provideEncryptedSharedPreference(
         @ApplicationContext context: Context
     ): SharedPreferences = EncryptedSharedPreferences.create(
@@ -31,6 +33,7 @@ object SharedPreferenceModule {
 
     @Provides
     @UnencryptedSharedPreference
+    @Singleton
     fun provideUnencryptedSharedPreference(
         @ApplicationContext context: Context
     ): SharedPreferences =

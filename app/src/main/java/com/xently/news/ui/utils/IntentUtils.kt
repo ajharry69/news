@@ -10,8 +10,8 @@ fun startShareArticleIntent(context: Context, article: Article) {
         Intent(Intent.ACTION_SEND).apply {
             putExtra(Intent.EXTRA_TEXT, article.url)
             putExtra(Intent.EXTRA_TITLE, article.headline)
-            if (!article.mediaThumbnailUrl.isNullOrBlank()) {
-                data = Uri.parse(article.mediaThumbnailUrl)
+            if (!article.mediaThumbnail.isNullOrBlank()) {
+                data = Uri.parse(article.mediaThumbnail)
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
         }, null

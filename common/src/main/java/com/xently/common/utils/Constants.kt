@@ -1,9 +1,5 @@
 package com.xently.common.utils
 
-import android.app.ActivityManager
-import android.app.Service
-import android.content.Context
-import android.content.Context.ACTIVITY_SERVICE
 import android.util.Log
 import com.xently.common.BuildConfig
 import com.xently.common.utils.Log.Type.*
@@ -86,10 +82,11 @@ object Log {
 
 fun isReleaseBuild() = BuildConfig.BUILD_TYPE.toLowerCase(Locale.ROOT).contains(Regex("^release$"))
 
+/*
 fun <T: Service> isServiceRunning(context: Context, clazz: Class<T>): Boolean {
     val manager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
     for (service in manager.getRunningServices(Int.MAX_VALUE)) {
         if (clazz.name == service.service.className) return true
     }
     return false
-}
+}*/

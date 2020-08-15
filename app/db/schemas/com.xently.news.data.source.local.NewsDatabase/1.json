@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f8eae1fe1dd16115bc8c66568b4420f7",
+    "identityHash": "f8144b65bb666bf06ea9751a151ae369",
     "entities": [
       {
         "tableName": "articles",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, `creationTime` TEXT NOT NULL, `updateTime` TEXT NOT NULL, `url` TEXT, `bookmarked` INTEGER NOT NULL, `firstName` TEXT, `lastName` TEXT, `photoUrl` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, `creationTime` TEXT NOT NULL, `updateTime` TEXT NOT NULL, `tags` TEXT NOT NULL, `url` TEXT, `bookmarked` INTEGER NOT NULL, `mediaThumbnail` TEXT, `firstName` TEXT, `lastName` TEXT, `photoUrl` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -45,6 +45,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "tags",
+            "columnName": "tags",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "url",
             "columnName": "url",
             "affinity": "TEXT",
@@ -55,6 +61,12 @@
             "columnName": "bookmarked",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "mediaThumbnail",
+            "columnName": "mediaThumbnail",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "author.firstName",
@@ -205,7 +217,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8eae1fe1dd16115bc8c66568b4420f7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8144b65bb666bf06ea9751a151ae369')"
     ]
   }
 }

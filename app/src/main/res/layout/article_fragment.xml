@@ -25,7 +25,8 @@
             style="@style/Widget.Xently.AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/expanded_collapsing_appbar_height"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            app:isHeightWrapContent="@{article.mediaUris.size() &lt; 1}">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -40,7 +41,8 @@
                     android:id="@+id/media"
                     android:name="com.xently.media.ui.MediaFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorPrimary" />
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"

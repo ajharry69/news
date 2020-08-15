@@ -32,6 +32,7 @@
             app:layout_constraintEnd_toStartOf="@id/headline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/headline"
+            app:layout_constraintVertical_bias="0"
             app:placeholder="@{@drawable/ic_avatar}"
             app:srcCompat="@drawable/ic_avatar"
             tools:src="@drawable/ic_avatar" />

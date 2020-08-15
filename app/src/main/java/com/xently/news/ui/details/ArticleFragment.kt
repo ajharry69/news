@@ -2,6 +2,7 @@ package com.xently.news.ui.details
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -61,11 +62,12 @@ class ArticleFragment : Fragment() {
                 binding.run {
                     setVariable(BR.article, it)
                     executePendingBindings()
+                    details.tags.isVisible = it.chipDataList.isNotEmpty()
+                    setChips(details.tags, it.chipDataList)
                 }
                 (childFragmentManager.findFragmentById(R.id.media) as? MediaFragment)?.run {
                     setMediaUris(*it.mediaUris.toTypedArray())
                 }
-                setChips(binding.details.tags, it.chipDataList)
             })
         }
     }
