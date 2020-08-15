@@ -64,6 +64,7 @@ class ArticleFragment : Fragment() {
                     executePendingBindings()
                     details.tags.isVisible = it.chipDataList.isNotEmpty()
                     setChips(details.tags, it.chipDataList)
+                    updateBookmarkMenuItem(toolbar.menu.findItem(R.id.add_bookmark), it.bookmarked)
                 }
                 (childFragmentManager.findFragmentById(R.id.media) as? MediaFragment)?.run {
                     setMediaUris(*it.mediaUris.toTypedArray())
@@ -75,11 +76,6 @@ class ArticleFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-//        updateBookmarkMenuItem(menu.findItem(R.id.add_bookmark), article.bookmarked)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -103,9 +99,9 @@ class ArticleFragment : Fragment() {
     private fun updateBookmarkMenuItem(item: MenuItem, bookmark: Boolean) {
         val (title, iconTint) = if (bookmark) {
             Pair(R.string.remove_bookmark, R.attr.colorControlActivated)
-        } else Pair(R.string.add_bookmark, R.attr.colorOnPrimary)
+        } else Pair(R.string.add_bookmark, R.attr.colorControlNormal)
         item.setTitle(title)
-        item.icon = item.icon.tintDrawable(requireContext().getThemedColor(iconTint))
+        item.icon = item.icon.tintDrawable(binding.toolbar.context.getThemedColor(iconTint))
     }
 
 }

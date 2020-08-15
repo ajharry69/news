@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:sliderAnimationDuration="600"
-        app:sliderAutoCycleDirection="back_and_forth"
+        app:sliderAutoCycleDirection="right"
         app:sliderAutoCycleEnabled="true"
         app:sliderIndicatorAnimationDuration="600"
         app:sliderIndicatorEnabled="true"
@@ -25,9 +25,9 @@
         app:sliderIndicatorOrientation="horizontal"
         app:sliderIndicatorPadding="3dp"
         app:sliderIndicatorRadius="2dp"
-        app:sliderIndicatorSelectedColor="?attr/colorOnSurface"
-        app:sliderIndicatorUnselectedColor="?attr/colorSurface"
-        app:sliderScrollTimeInSec="1"
+        app:sliderIndicatorSelectedColor="@color/black_overlay"
+        app:sliderIndicatorUnselectedColor="@color/black_overlay"
+        app:sliderScrollTimeInSec="5"
         app:sliderStartAutoCycle="true" />
 
     <!--<ImageView

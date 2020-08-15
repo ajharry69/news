@@ -12,7 +12,8 @@ import com.xently.media.R
 
 class ImageSliderAdapter : SliderViewAdapter<ImageSliderAdapter.ImageSliderViewHolder>() {
 
-    private var imageUrls = listOf<Uri>()
+    private var imageUrls: List<Uri> = listOf()
+
     fun submitList(imageUrls: List<Uri>) {
         this.imageUrls = imageUrls
         notifyDataSetChanged()
@@ -41,7 +42,7 @@ class ImageSliderAdapter : SliderViewAdapter<ImageSliderAdapter.ImageSliderViewH
         fun bind(imageUri: Uri) {
             Glide.with(itemView.context)
                 .load(imageUri)
-                .fitCenter()
+                .centerCrop()
                 .into(imageView)
         }
     }

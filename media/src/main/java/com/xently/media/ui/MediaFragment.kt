@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.Player
@@ -62,10 +63,15 @@ open class MediaFragment : Fragment(R.layout.media_fragment) {
         super.onActivityCreated(savedInstanceState)
         viewModel.run {
             videoMediaUris.observe(viewLifecycleOwner, Observer {
-                if (it.isNullOrEmpty()) hideViews(sliderView) else showViews(videoPlayerView)
+                if (it.isNullOrEmpty()) {
+                    hideViews(videoPlayerView)
+                } else showViews(videoPlayerView)
+                sliderView.isVisible = !videoPlayerView.isVisible
+                initializePlayer(*it)
             })
             imageMediaUris.observe(viewLifecycleOwner, Observer {
-                if (it.isNullOrEmpty()) hideViews(videoPlayerView) else showViews(sliderView)
+                if (it.isNullOrEmpty()) hideViews(sliderView) else showViews(sliderView)
+                videoPlayerView.isVisible = !sliderView.isVisible
                 sliderAdapter.submitList(it.toList())
             })
         }
@@ -132,6 +138,10 @@ open class MediaFragment : Fragment(R.layout.media_fragment) {
     }
 
     private fun initializePlayer() {
+        initializePlayer(*videoUris)
+    }
+
+    private fun initializePlayer(vararg videoUris: Uri) {
         if (player == null) {
             val trackSelector = DefaultTrackSelector(requireContext())
             trackSelector.setParameters(trackSelector.buildUponParameters().setMaxVideoSizeSd())

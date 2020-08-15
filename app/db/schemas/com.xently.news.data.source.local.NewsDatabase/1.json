@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f8144b65bb666bf06ea9751a151ae369",
+    "identityHash": "9238e25143bd9cf46590be71ed7b342c",
     "entities": [
       {
         "tableName": "articles",
@@ -146,7 +146,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "Media",
+        "tableName": "media",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `url` TEXT NOT NULL, `thumbnailUrl` TEXT, `articleId` INTEGER NOT NULL, FOREIGN KEY(`articleId`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
@@ -217,7 +217,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8144b65bb666bf06ea9751a151ae369')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9238e25143bd9cf46590be71ed7b342c')"
     ]
   }
 }

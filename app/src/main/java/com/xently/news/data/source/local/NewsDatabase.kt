@@ -5,13 +5,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.xently.news.data.model.Article
 import com.xently.news.data.model.ArticleFTS
-import com.xently.news.data.model.Media
+import com.xently.news.data.model.Medium
 
 @Database(
     entities = [
         ArticleFTS::class,
         Article::class,
-        Media::class
+        Medium::class
     ],
     version = 1,
     exportSchema = true
@@ -19,4 +19,5 @@ import com.xently.news.data.model.Media
 @TypeConverters(RoomTypeConverters.StringListConverter::class)
 abstract class NewsDatabase : RoomDatabase() {
     abstract val articlesDAO: ArticleDAO
+    abstract val mediaDAO: MediaDAO
 }

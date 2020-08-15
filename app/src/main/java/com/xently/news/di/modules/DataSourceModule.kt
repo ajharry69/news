@@ -3,6 +3,7 @@ package com.xently.news.di.modules
 import com.xently.news.data.source.IArticleDataSource
 import com.xently.news.data.source.local.ArticleDAO
 import com.xently.news.data.source.local.ArticleLocalDataSource
+import com.xently.news.data.source.local.MediaDAO
 import com.xently.news.data.source.remote.ArticleRemoteDataSource
 import com.xently.news.data.source.remote.ArticleService
 import com.xently.news.di.qualifiers.LocalArticlesDataSource
@@ -21,8 +22,8 @@ object DataSourceModule {
     @Provides
     @Singleton
     @LocalArticlesDataSource
-    fun provideArticlesLocalDataSource(dao: ArticleDAO): IArticleDataSource =
-        ArticleLocalDataSource(dao)
+    fun provideArticlesLocalDataSource(dao: ArticleDAO, mediaDAO: MediaDAO): IArticleDataSource =
+        ArticleLocalDataSource(dao, mediaDAO)
 
     @Provides
     @Singleton

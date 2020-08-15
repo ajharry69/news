@@ -33,8 +33,8 @@ data class Article(
     @Embedded
     var author: Author = Author(),
     @Ignore
-    val media: List<Media> = emptyList(),
-    var tags: List<String> = emptyList(),
+    val media: List<Medium> = emptyList(),
+    var tags: Set<String> = emptySet(),
     var url: String? = null,
     @Exclude
     var bookmarked: Boolean = false,
@@ -59,7 +59,7 @@ data class Article(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readParcelable<Author>(Author::class.java.classLoader) ?: Author(),
-        parcel.createTypedArrayList(Media) ?: emptyList()
+        parcel.createTypedArrayList(Medium) ?: emptyList()
     )
 
     override fun hashCode(): Int {

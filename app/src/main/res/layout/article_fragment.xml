@@ -15,52 +15,53 @@
             type="com.xently.news.data.model.Article" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             style="@style/Widget.Xently.AppBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/expanded_collapsing_appbar_height"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:isHeightWrapContent="@{article.mediaUris.size() &lt; 1}">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scrollable"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                style="@style/Widget.Xently.Toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
-                app:titleEnabled="false"
-                app:toolbarId="@+id/toolbar">
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/media"
-                    android:name="com.xently.media.ui.MediaFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="?attr/colorPrimary" />
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/toolbar"
-                    style="@style/Widget.Xently.Toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@android:color/transparent"
-                    app:layout_collapseMode="pin"
-                    app:menu="@menu/article_details"
-                    app:title="@{article.headline}"
-                    tools:title="What is Lorem Ipsum?" />
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+                android:layout_height="?attr/actionBarSize"
+                app:menu="@menu/article_details"
+                app:title="@{article.headline}"
+                tools:title="What is Lorem Ipsum?" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:isVisible="@{viewModel.showProgressbar}"
+            app:layout_constraintBottom_toBottomOf="@id/appbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar"
+            tools:visibility="visible" />
+
+        <ScrollView
+            android:id="@+id/scrollable"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar">
 
             <include
                 android:id="@+id/details"
@@ -68,16 +69,7 @@
                 bind:article="@{article}"
                 bind:viewModel="@{viewModel}" />
 
-        </androidx.core.widget.NestedScrollView>
+        </ScrollView>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_bookmark"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -17,13 +17,26 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/screen_edge_margin">
+        android:layout_height="wrap_content">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/media"
+            android:name="com.xently.media.ui.MediaFragment"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/expanded_collapsing_appbar_height"
+            android:layout_marginBottom="@dimen/screen_edge_margin"
+            app:isVisible="@{article.mediaUris.size() > 0}"
+            app:layout_constraintBottom_toTopOf="@id/headline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/black_overlay" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/author_photo"
             android:layout_width="@dimen/avatar_dimension"
             android:layout_height="0dp"
+            android:layout_marginStart="@dimen/screen_edge_margin"
             android:layout_marginEnd="8dp"
             app:civ_border_color="?attr/colorOnSurface"
             app:civ_border_width="1dp"
@@ -42,12 +55,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/screen_edge_margin"
             android:text="@{article.headline}"
             android:textAppearance="?attr/textAppearanceHeadline6"
             app:layout_constraintBottom_toTopOf="@id/sub_headline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/author_photo"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/media"
             tools:text="What is lorem ipsum?" />
 
         <TextView
@@ -60,7 +74,7 @@
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toTopOf="@id/content"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/headline"
             app:layout_constraintStart_toStartOf="@id/headline"
             app:layout_constraintTop_toBottomOf="@id/headline"
             tools:text="John Doe - 2020-08-09" />
@@ -69,7 +83,9 @@
             android:id="@+id/content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/screen_edge_margin"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/screen_edge_margin"
             android:layout_marginBottom="8dp"
             android:text="@{article.content}"
             android:textAppearance="?attr/textAppearanceBody1"
@@ -83,7 +99,10 @@
             android:id="@+id/tags_scroll_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/screen_edge_margin"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/screen_edge_margin"
+            android:layout_marginBottom="@dimen/screen_edge_margin"
             android:visibility="gone"
             app:isVisible="@{article.chipDataList.size() > 0}"
             app:layout_constraintBottom_toBottomOf="parent"

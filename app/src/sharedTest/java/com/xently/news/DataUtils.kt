@@ -2,14 +2,14 @@ package com.xently.news
 
 import com.xently.news.data.model.Article
 import com.xently.news.data.model.Author
-import com.xently.news.data.model.Media
+import com.xently.news.data.model.Medium
 
 val ARTICLE = Article(
     1,
     "Article 1",
     "Contents of Article 1",
     author = Author("John", "Doe"),
-    media = listOf(Media(1, "", articleId = 1)),
+    media = listOf(Medium(1, "", articleId = 1)),
     tags = listOf("technology", "android", "google", "kotlin"),
     url = "https://domain.xyz/1/"
 )

@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
@@ -35,10 +36,12 @@ fun setImageFromUrl(view: ImageView, url: String?, placeholder: Drawable?) {
 
 @BindingAdapter(value = ["chipItems"])
 fun setChips(group: ChipGroup, chipItems: Collection<ChipData>) {
+    group.removeAllViews()
     chipItems.forEach {
         val chip = Chip(group.context).apply {
             text = it.text
-            chipIcon = it.icon?.let { icon -> context.getDrawable(icon) }
+
+            chipIcon = it.icon?.let { icon -> ContextCompat.getDrawable(context, icon) }
         }
         group.addView(chip, WRAP_CONTENT, WRAP_CONTENT)
     }

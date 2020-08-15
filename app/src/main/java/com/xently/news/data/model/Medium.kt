@@ -8,6 +8,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
+    tableName = "media",
     foreignKeys = [
         ForeignKey(
             entity = Article::class,
@@ -28,7 +29,7 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class Media(
+data class Medium(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val url: String,
     val thumbnailUrl: String? = null,
@@ -52,9 +53,9 @@ data class Media(
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<Media> {
-        override fun createFromParcel(parcel: Parcel): Media = Media(parcel)
+    companion object CREATOR : Parcelable.Creator<Medium> {
+        override fun createFromParcel(parcel: Parcel): Medium = Medium(parcel)
 
-        override fun newArray(size: Int): Array<Media?> = arrayOfNulls(size)
+        override fun newArray(size: Int): Array<Medium?> = arrayOfNulls(size)
     }
 }
