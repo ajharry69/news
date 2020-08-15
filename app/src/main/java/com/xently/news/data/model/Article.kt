@@ -38,7 +38,9 @@ data class Article(
     var url: String? = null,
     @Exclude
     var bookmarked: Boolean = false,
-    var mediaThumbnail: String? = null
+    var flagged: Boolean = false,
+    var mediaThumbnail: String? = null,
+    var commentsCount: Int = 0
 ) : Parcelable {
 
     val mediaUris: List<String>

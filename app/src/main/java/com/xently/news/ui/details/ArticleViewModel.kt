@@ -1,11 +1,16 @@
 package com.xently.news.ui.details
 
+import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.TaskResult
 import com.xently.news.data.model.Article
 import com.xently.news.data.repository.IArticlesRepository
+import com.xently.news.ui.AbstractArticleViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -14,17 +19,13 @@ import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 
-class ArticleViewModel @ViewModelInject constructor(private val repository: IArticlesRepository) :
-    ViewModel() {
+class ArticleViewModel @ViewModelInject constructor(
+    private val repository: IArticlesRepository,
+    app: Application
+) : AbstractArticleViewModel(repository, app) {
     private val _articleFetchResult = MutableLiveData<TaskResult<Article>>()
     val articleFetchResult: LiveData<TaskResult<Article>>
         get() = _articleFetchResult
-    private val _addBookmarkResult = MutableLiveData<TaskResult<Boolean>>()
-    val addBookmarkResult: LiveData<TaskResult<Boolean>>
-        get() = _addBookmarkResult
-    private val _showProgressbar = MutableLiveData<Boolean>(false)
-    val showProgressbar: LiveData<Boolean>
-        get() = _showProgressbar
     val dataSource = ConflatedBroadcastChannel(LOCAL)
     val articleId = ConflatedBroadcastChannel<Long>()
 
@@ -37,20 +38,8 @@ class ArticleViewModel @ViewModelInject constructor(private val repository: IArt
             if (id != null && source == LOCAL) getArticle(id)
         }.asLiveData()
 
-    private val taskResultObserver: (TaskResult<Any>) -> Unit = {
-        _showProgressbar.value = it is TaskResult.Loading
-    }
-
     init {
         _articleFetchResult.observeForever(taskResultObserver)
-        _addBookmarkResult.observeForever(taskResultObserver)
-    }
-
-    fun addBookmark(articleId: Long, bookmark: Boolean) {
-        _addBookmarkResult.value = TaskResult.Loading
-        viewModelScope.launch {
-            _addBookmarkResult.value = repository.addBookMark(articleId, bookmark)
-        }
     }
 
     /**
@@ -66,6 +55,5 @@ class ArticleViewModel @ViewModelInject constructor(private val repository: IArt
     override fun onCleared() {
         super.onCleared()
         _articleFetchResult.removeObserver(taskResultObserver)
-        _addBookmarkResult.removeObserver(taskResultObserver)
     }
 }

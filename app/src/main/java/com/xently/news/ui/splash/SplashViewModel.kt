@@ -10,7 +10,7 @@ import kotlin.random.Random
 class SplashViewModel @ViewModelInject constructor() : ViewModel() {
     fun showArticleListFragment(test: Boolean = false) = wrapEspressoIdlingResource {
         liveData {
-            if (!test) delay(Random.nextLong(1, 1000))
+            if (!test) delay(Random.nextLong(1, 500))
             emit(true)
         }
     }

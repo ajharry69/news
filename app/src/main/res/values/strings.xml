@@ -103,4 +103,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="add_comment">Add Comment</string>
+    <string name="flag_inappropriate">Flag as inappropriate</string>
 </resources>

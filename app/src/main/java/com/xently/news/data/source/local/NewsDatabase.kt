@@ -13,7 +13,7 @@ import com.xently.news.data.model.Medium
         Article::class,
         Medium::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(RoomTypeConverters.StringListConverter::class)

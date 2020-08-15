@@ -12,6 +12,7 @@ import com.xently.common.data.errorMessage
 import com.xently.news.R
 import com.xently.news.data.model.Article
 import com.xently.news.data.repository.IArticlesRepository
+import com.xently.news.ui.AbstractArticleViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
@@ -20,16 +21,13 @@ import kotlinx.coroutines.launch
 abstract class AbstractArticleListViewModel internal constructor(
     protected val repository: IArticlesRepository,
     app: Application
-) : AndroidViewModel(app) {
+) : AbstractArticleViewModel(repository,app) {
 
     @VisibleForTesting
     val context: Context = app.applicationContext
-    private val _articleListsResults = MutableLiveData<TaskResult<List<Article>>>()
-    val articleListsResults: LiveData<TaskResult<List<Article>>>
-        get() = _articleListsResults
-    private val _showProgressbar = MutableLiveData<Boolean>(false)
-    val showProgressbar: LiveData<Boolean>
-        get() = _showProgressbar
+    private val _articleListResults = MutableLiveData<TaskResult<List<Article>>>()
+    val articleListResults: LiveData<TaskResult<List<Article>>>
+        get() = _articleListResults
     private val _articleListCount = MutableLiveData(0)
     val articleListCount: LiveData<Int>
         get() = _articleListCount
@@ -90,7 +88,7 @@ abstract class AbstractArticleListViewModel internal constructor(
     }
 
     init {
-        _articleListsResults.observeForever(articleListTaskResultsObserver)
+        _articleListResults.observeForever(articleListTaskResultsObserver)
         articleLists.observeForever(observableArticleListObserver)
     }
 
@@ -98,17 +96,17 @@ abstract class AbstractArticleListViewModel internal constructor(
      * Fetch article(s) remotely
      */
     fun getArticles(searchQuery: String? = null) {
-        _articleListsResults.postValue(TaskResult.Loading)
+        _articleListResults.postValue(TaskResult.Loading)
         updateStatusMessageOnSearch(searchQuery, R.string.status_searching_remote_articles)
         viewModelScope.launch {
-            _articleListsResults.postValue(repository.getArticles(searchQuery))
+            _articleListResults.postValue(repository.getArticles(searchQuery))
         }
     }
 
     override fun onCleared() {
-        articleLists.removeObserver(observableArticleListObserver)
-        _articleListsResults.removeObserver(articleListTaskResultsObserver)
         super.onCleared()
+        articleLists.removeObserver(observableArticleListObserver)
+        _articleListResults.removeObserver(articleListTaskResultsObserver)
     }
 
     private fun updateStatusMessageOnSearch(

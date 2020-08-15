@@ -2,13 +2,16 @@ package com.xently.news.ui.list.utils
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.xently.news.R
 import com.xently.news.data.model.Article
 import com.xently.news.databinding.ArticleItemBinding
-import javax.inject.Inject
+import com.xently.news.ui.details.ArticleFragmentArgs
 
-class ArticlesAdapter @Inject constructor() :
+class ArticlesAdapter constructor(private val clickListener: OnActionButtonClickListener? = null) :
     ListAdapter<Article, ArticlesAdapter.ViewHolder>(ArticleDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -29,15 +32,22 @@ class ArticlesAdapter @Inject constructor() :
         fun bind(article: Article) {
             binding.run {
                 this.article = article
-                /*root.setOnClickListener {
-                    onArticleItemClick(it, article)
+                root.setOnClickListener {
+                    val bundle = ArticleFragmentArgs(article.id).toBundle()
+                    it.findNavController().navigate(
+                        R.id.dest_article_details,
+                        bundle,
+                        navOptions {
+                            launchSingleTop = true
+                        }
+                    )
                 }
                 share.setOnClickListener {
-                    onShareClick(it, article)
+                    clickListener?.onActionButtonClick(article, it)
                 }
                 addBookmark.setOnClickListener {
-                    onAddBookmarkClick(it, article)
-                }*/
+                    clickListener?.onActionButtonClick(article, it)
+                }
             }
         }
     }

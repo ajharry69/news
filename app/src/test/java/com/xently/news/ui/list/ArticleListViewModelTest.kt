@@ -78,7 +78,7 @@ class ArticleListViewModelTest {
         mainCoroutineRule.pauseDispatcher()
         viewModel.getArticles()
 
-        assertThat(viewModel.articleListsResults.getOrAwaitValue(), instanceOf(Loading::class.java))
+        assertThat(viewModel.articleListResults.getOrAwaitValue(), instanceOf(Loading::class.java))
         assertThat(viewModel.showProgressbar.getOrAwaitValue(), equalTo(true))
         // status is updated to show that articles are being fetched from internet
         assertThat(
@@ -88,7 +88,7 @@ class ArticleListViewModelTest {
 
         mainCoroutineRule.resumeDispatcher()
         assertThat(
-            viewModel.articleListsResults.getOrAwaitValue(),
+            viewModel.articleListResults.getOrAwaitValue(),
             not(instanceOf(Loading::class.java))
         )
         assertThat(viewModel.showProgressbar.getOrAwaitValue(), equalTo(false))

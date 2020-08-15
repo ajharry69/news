@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "6ccae1d15c0785ff4924fafa228fc232",
+    "version": 2,
+    "identityHash": "7567348445387d34be4a19b23a4c9993",
     "entities": [
       {
         "tableName": "articles",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, `creationTime` TEXT NOT NULL, `updateTime` TEXT NOT NULL, `tags` TEXT NOT NULL, `url` TEXT, `bookmarked` INTEGER NOT NULL, `mediaThumbnail` TEXT, `commentsCount` INTEGER NOT NULL, `firstName` TEXT, `lastName` TEXT, `photoUrl` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `headline` TEXT NOT NULL, `content` TEXT NOT NULL, `publicationDate` TEXT NOT NULL, `creationTime` TEXT NOT NULL, `updateTime` TEXT NOT NULL, `tags` TEXT NOT NULL, `url` TEXT, `bookmarked` INTEGER NOT NULL, `flagged` INTEGER NOT NULL, `mediaThumbnail` TEXT, `commentsCount` INTEGER NOT NULL, `firstName` TEXT, `lastName` TEXT, `photoUrl` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -59,6 +59,12 @@
           {
             "fieldPath": "bookmarked",
             "columnName": "bookmarked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flagged",
+            "columnName": "flagged",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -223,7 +229,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6ccae1d15c0785ff4924fafa228fc232')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7567348445387d34be4a19b23a4c9993')"
     ]
   }
 }

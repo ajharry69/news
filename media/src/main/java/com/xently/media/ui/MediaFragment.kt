@@ -88,7 +88,7 @@ open class MediaFragment : Fragment(R.layout.media_fragment) {
 
     override fun onResume() {
         super.onResume()
-        hideSystemUI()
+//        hideSystemUI()
         // Android API level 24 and lower requires you to wait as long as possible until you
         // grab resources, so you wait until onResume before initializing the player.
         // Android API level 24 and lower requires you to wait as long as possible until you

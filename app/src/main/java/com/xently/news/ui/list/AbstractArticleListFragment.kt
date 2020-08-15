@@ -5,19 +5,32 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.xently.news.R
+import com.xently.news.data.model.Article
 import com.xently.news.databinding.ArticleListFragmentBinding
 import com.xently.news.ui.list.utils.ArticlesAdapter
+import com.xently.news.ui.list.utils.OnActionButtonClickListener
+import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.ListFragment
-import javax.inject.Inject
 
-abstract class AbstractArticleListFragment : ListFragment() {
-    @Inject
-    lateinit var articlesAdapter: ArticlesAdapter
+abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClickListener {
+    private lateinit var articlesAdapter: ArticlesAdapter
     abstract val viewModel: AbstractArticleListViewModel
 
     private var _binding: ArticleListFragmentBinding? = null
     protected val binding: ArticleListFragmentBinding
         get() = _binding!!
+
+    override fun onActionButtonClick(article: Article, view: View) {
+        when (view.id) {
+            R.id.share -> startShareArticleIntent(view.context, article)
+            R.id.add_bookmark -> viewModel.addBookmark(article.id, !article.bookmarked)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        articlesAdapter = ArticlesAdapter(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

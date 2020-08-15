@@ -8,10 +8,6 @@
         <variable
             name="article"
             type="com.xently.news.data.model.Article" />
-
-        <import
-            alias="Click"
-            type="com.xently.news.ui.list.utils.ClickHandlerUtilKt" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -31,7 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="194dp"
                 android:contentDescription="@string/content_desc_media"
-                android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                 android:scaleType="centerCrop"
                 app:imageFromUrl="@{article.mediaThumbnail}"
                 app:isVisible="@{article.mediaThumbnail != null}"
@@ -53,7 +48,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                         android:text="@{article.headline}"
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         app:layout_constraintBottom_toTopOf="@id/sub_headline"
@@ -67,7 +61,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                         android:text="@{article.subHeadline}"
                         android:textAppearance="?attr/textAppearanceBody2"
                         android:textColor="?android:attr/textColorSecondary"
@@ -100,7 +93,6 @@
                     android:layout_marginTop="16dp"
                     android:ellipsize="end"
                     android:maxLines="4"
-                    android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                     android:text="@{article.content}"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary"
@@ -110,29 +102,84 @@
             </LinearLayout>
 
             <!-- Buttons -->
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:orientation="horizontal">
+                android:layout_margin="8dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/share"
-                    style="?attr/borderlessButtonStyle"
+                <ImageButton
+                    android:id="@+id/add_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:onClick="@{(v) -> Click.onShareClick(v,article)}"
-                    android:text="@string/share" />
+                    android:layout_margin="8dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/add_bookmark"
+                    android:scaleType="centerCrop"
+                    android:tint="?android:attr/colorControlNormal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/comments_count"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_comment" />
 
-                <com.google.android.material.button.MaterialButton
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/comments_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@{@plurals/article_comments_count(article.commentsCount,article.commentsCount)}"
+                    app:layout_constraintBottom_toBottomOf="@id/add_comment"
+                    app:layout_constraintStart_toEndOf="@id/add_comment"
+                    app:layout_constraintTop_toTopOf="@id/add_comment"
+                    tools:text="123 comments" />
+
+                <ImageButton
+                    android:id="@+id/flag_inappropriate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/flag_inappropriate"
+                    android:scaleType="centerCrop"
+                    app:isBookmarked="@{article.flagged}"
+                    app:layout_constraintBottom_toBottomOf="@id/add_bookmark"
+                    app:layout_constraintEnd_toStartOf="@id/add_bookmark"
+                    app:layout_constraintTop_toTopOf="@id/add_bookmark"
+                    app:srcCompat="@drawable/ic_flag_inappropriate" />
+
+                <ImageButton
                     android:id="@+id/add_bookmark"
-                    style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{(v) -> Click.onAddBookmarkClick(v,article)}"
-                    android:text="@string/add_bookmark" />
-            </LinearLayout>
+                    android:layout_margin="8dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/add_bookmark"
+                    android:scaleType="centerCrop"
+                    app:isBookmarked="@{article.bookmarked}"
+                    app:layout_constraintBottom_toBottomOf="@id/share"
+                    app:layout_constraintEnd_toStartOf="@id/share"
+                    app:layout_constraintTop_toTopOf="@id/share"
+                    app:srcCompat="@drawable/ic_bookmark" />
+
+                <ImageButton
+                    android:id="@+id/share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/share"
+                    android:scaleType="centerCrop"
+                    android:tint="?android:attr/colorControlNormal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_share" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

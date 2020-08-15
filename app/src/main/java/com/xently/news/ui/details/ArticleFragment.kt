@@ -84,9 +84,7 @@ class ArticleFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.add_bookmark -> {
-            val bookmark = !article.bookmarked
-            updateBookmarkMenuItem(item, bookmark)
-            viewModel.addBookmark(args.articleId, bookmark)
+            viewModel.addBookmark(args.articleId, !article.bookmarked)
             true
         }
         R.id.share -> {
