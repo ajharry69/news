@@ -8,9 +8,12 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.xently.common.data.TaskResult
 import com.xently.common.data.errorMessage
+import com.xently.media.ui.MediaFragment
+import com.xently.news.BR
 import com.xently.news.R
 import com.xently.news.data.model.Article
 import com.xently.news.databinding.ArticleFragmentBinding
+import com.xently.news.ui.utils.setChips
 import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.Fragment
 import com.xently.utilities.viewext.getThemedColor
@@ -45,8 +48,8 @@ class ArticleFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val taskResultObserver = Observer<TaskResult<Any>> {
-            if (it is TaskResult.Error) {
-                it.errorMessage?.let { message -> showSnackBar(message, Snackbar.LENGTH_LONG) }
+            if (it is TaskResult.Error) it.errorMessage?.let { message ->
+                showSnackBar(message, Snackbar.LENGTH_LONG)
             }
         }
         viewModel.run {
@@ -55,6 +58,14 @@ class ArticleFragment : Fragment() {
             articleFetchResult.observe(viewLifecycleOwner, taskResultObserver)
             article.observe(viewLifecycleOwner, Observer {
                 this@ArticleFragment.article = it
+                binding.run {
+                    setVariable(BR.article, it)
+                    executePendingBindings()
+                }
+                (childFragmentManager.findFragmentById(R.id.media) as? MediaFragment)?.run {
+                    setMediaUris(*it.mediaUris.toTypedArray())
+                }
+                setChips(binding.details.tags, it.chipDataList)
             })
         }
     }
@@ -66,7 +77,7 @@ class ArticleFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        updateBookmarkMenuItem(menu.findItem(R.id.add_bookmark), article.bookmarked)
+//        updateBookmarkMenuItem(menu.findItem(R.id.add_bookmark), article.bookmarked)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -90,7 +101,7 @@ class ArticleFragment : Fragment() {
     private fun updateBookmarkMenuItem(item: MenuItem, bookmark: Boolean) {
         val (title, iconTint) = if (bookmark) {
             Pair(R.string.remove_bookmark, R.attr.colorControlActivated)
-        } else Pair(R.string.add_bookmark, R.attr.colorControlNormal)
+        } else Pair(R.string.add_bookmark, R.attr.colorOnPrimary)
         item.setTitle(title)
         item.icon = item.icon.tintDrawable(requireContext().getThemedColor(iconTint))
     }

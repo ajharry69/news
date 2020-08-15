@@ -17,7 +17,7 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
-        testInstrumentationRunner "com.xently.shoppingassistant.utils.XentlyShoppingTestRunner"
+        testInstrumentationRunner "com.xently.news.NewsTestRunner"
         kapt {
             arguments {
                 arg("room.schemaLocation", "$projectDir/db/schemas/")
@@ -68,6 +68,15 @@ android {
             includeAndroidResources = true
             returnDefaultValues = true // required to not break unit tests
         }
+    }
+
+    packagingOptions {
+        pickFirst 'win32-x86-64/attach_hotspot_windows.dll'
+        pickFirst 'win32-x86/attach_hotspot_windows.dll'
+        pickFirst 'META-INF/common_debug.kotlin_module'
+        pickFirst 'META-INF/licenses/ASM'
+        pickFirst 'META-INF/AL2.0'
+        pickFirst 'META-INF/LGPL2.1'
     }
 }
 

@@ -64,8 +64,8 @@ class ArticleViewModel @ViewModelInject constructor(private val repository: IArt
     }
 
     override fun onCleared() {
+        super.onCleared()
         _articleFetchResult.removeObserver(taskResultObserver)
         _addBookmarkResult.removeObserver(taskResultObserver)
-        super.onCleared()
     }
 }

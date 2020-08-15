@@ -49,12 +49,14 @@
 
                     <TextView
                         android:id="@+id/headline"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                         android:text="@{article.headline}"
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         app:layout_constraintBottom_toTopOf="@id/sub_headline"
+                        app:layout_constraintEnd_toStartOf="@id/author_photo"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="What is Lorem Ipsum?" />
@@ -63,7 +65,8 @@
                         android:id="@+id/sub_headline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
+                        android:onClick="@{(v) -> Click.onArticleItemClick(v,article)}"
                         android:text="@{article.subHeadline}"
                         android:textAppearance="?attr/textAppearanceBody2"
                         android:textColor="?android:attr/textColorSecondary"
@@ -75,13 +78,17 @@
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/author_photo"
                         android:layout_width="@dimen/avatar_dimension"
-                        android:layout_height="0dp"
+                        android:layout_height="@dimen/avatar_dimension"
+                        android:layout_marginStart="4dp"
                         app:civ_border_color="?attr/colorOnSurface"
                         app:civ_border_width="1dp"
                         app:imageFromUrl="@{article.author.photoUrl}"
                         app:layout_constraintBottom_toBottomOf="@id/sub_headline"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/headline"
                         app:layout_constraintTop_toTopOf="@id/headline"
+                        app:layout_constraintVertical_bias="0"
+                        app:placeholder="@{@drawable/ic_avatar}"
                         app:srcCompat="@drawable/ic_avatar"
                         tools:src="@drawable/ic_avatar" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -110,6 +117,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/share"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -118,6 +126,7 @@
                     android:text="@string/share" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_bookmark"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

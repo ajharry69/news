@@ -27,7 +27,18 @@ class ArticlesAdapter @Inject constructor() :
     inner class ViewHolder(private val binding: ArticleItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(article: Article) {
-            binding.article = article
+            binding.run {
+                this.article = article
+                /*root.setOnClickListener {
+                    onArticleItemClick(it, article)
+                }
+                share.setOnClickListener {
+                    onShareClick(it, article)
+                }
+                addBookmark.setOnClickListener {
+                    onAddBookmarkClick(it, article)
+                }*/
+            }
         }
     }
 }

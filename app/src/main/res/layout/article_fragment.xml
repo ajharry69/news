@@ -9,6 +9,10 @@
         <variable
             name="viewModel"
             type="com.xently.news.ui.details.ArticleViewModel" />
+
+        <variable
+            name="article"
+            type="com.xently.news.data.model.Article" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,14 +33,14 @@
                 app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
+                app:titleEnabled="false"
                 app:toolbarId="@+id/toolbar">
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/media"
                     android:name="com.xently.media.ui.MediaFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:mediaUris="@{viewModel.article.mediaUris}" />
+                    android:layout_height="match_parent" />
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
@@ -46,14 +50,23 @@
                     android:background="@android:color/transparent"
                     app:layout_collapseMode="pin"
                     app:menu="@menu/article_details"
-                    app:title="@{viewModel.article.headline}"
+                    app:title="@{article.headline}"
                     tools:title="What is Lorem Ipsum?" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <include
-            layout="@layout/article_details_content"
-            bind:viewModel="@{viewModel}" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <include
+                android:id="@+id/details"
+                layout="@layout/article_details_content"
+                bind:article="@{article}"
+                bind:viewModel="@{viewModel}" />
+
+        </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"

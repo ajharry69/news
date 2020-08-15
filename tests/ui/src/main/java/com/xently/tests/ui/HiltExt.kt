@@ -20,10 +20,10 @@ import androidx.test.core.app.ApplicationProvider
  * as can be found in this project.
  */
 inline fun <reified A : FragmentActivity, reified T : Fragment> launchFragmentInHiltContainer(
-    fragmentArgs: Bundle?,
-    @StyleRes themeResId: Int,
+    fragmentArgs: Bundle? = null,
+    @StyleRes themeResId: Int = R.style.Theme_Xently,
     crossinline action: T.() -> Unit = {}
-) {
+): ActivityScenario<A> {
     val startActivityIntent = Intent.makeMainActivity(
         ComponentName(
             ApplicationProvider.getApplicationContext(),
@@ -31,7 +31,7 @@ inline fun <reified A : FragmentActivity, reified T : Fragment> launchFragmentIn
         )
     ).putExtra(EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY, themeResId)
 
-    ActivityScenario.launch<A>(startActivityIntent).onActivity { activity ->
+    return ActivityScenario.launch<A>(startActivityIntent).onActivity { activity ->
         val fragment: T = activity.supportFragmentManager.fragmentFactory.instantiate(
             T::class.java.classLoader!!,
             T::class.java.name

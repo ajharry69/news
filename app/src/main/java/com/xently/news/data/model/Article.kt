@@ -6,7 +6,6 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 import com.xently.common.utils.Exclude
 import com.xently.news.ui.utils.ChipData
 import java.text.SimpleDateFormat
@@ -33,7 +32,6 @@ data class Article(
     @Embedded
     var author: Author = Author(),
     @Ignore
-    @SerializedName("media_urls")
     val media: List<Media> = emptyList(),
     @Ignore
     val tags: List<String> = emptyList(),
@@ -53,7 +51,7 @@ data class Article(
 
     val subHeadline: String
         @Ignore
-        get() = "${author.name ?: ""} $publicationDate".trimStart()
+        get() = "${author.name ?: ""} - $publicationDate".trimStart()
 
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
