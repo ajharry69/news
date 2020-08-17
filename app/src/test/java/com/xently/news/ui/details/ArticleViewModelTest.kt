@@ -1,6 +1,10 @@
 package com.xently.news.ui.details
 
+import android.app.Application
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult.Loading
@@ -20,7 +24,11 @@ import org.hamcrest.Matchers.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
+@RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.P])
 class ArticleViewModelTest {
 
     @get:Rule
@@ -37,7 +45,8 @@ class ArticleViewModelTest {
         val local = FakeArticleDataSource(ARTICLE)
         val remote = FakeArticleDataSource(*REMOTE_ARTICLES.toTypedArray(), ARTICLE)
         repository = ArticlesRepository(local, remote, Dispatchers.Unconfined)
-        viewModel = ArticleViewModel(repository)
+        viewModel =
+            ArticleViewModel(ApplicationProvider.getApplicationContext() as Application, repository)
     }
 
     @Test

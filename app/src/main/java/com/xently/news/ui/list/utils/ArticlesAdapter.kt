@@ -1,6 +1,7 @@
 package com.xently.news.ui.list.utils
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
@@ -13,6 +14,10 @@ import com.xently.news.ui.details.ArticleFragmentArgs
 
 class ArticlesAdapter constructor(private val clickListener: OnActionButtonClickListener? = null) :
     ListAdapter<Article, ArticlesAdapter.ViewHolder>(ArticleDiffUtil()) {
+    interface OnActionButtonClickListener {
+        fun onActionButtonClick(article: Article, view: View)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ArticleItemBinding.inflate(

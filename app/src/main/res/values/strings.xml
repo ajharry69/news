@@ -104,4 +104,5 @@
     </string>
     <string name="add_comment">Add Comment</string>
     <string name="flag_inappropriate">Flag as inappropriate</string>
+    <string name="refresh">Refresh</string>
 </resources>

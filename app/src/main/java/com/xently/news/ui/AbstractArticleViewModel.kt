@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 
 @Suppress("PropertyName")
 abstract class AbstractArticleViewModel internal constructor(
-    private val repository: IArticlesRepository,
-    app: Application
+    app: Application,
+    private val repository: IArticlesRepository
 ) : AndroidViewModel(app) {
     private val _addBookmarkResult = MutableLiveData<TaskResult<Boolean>>()
     val addBookmarkResult: LiveData<TaskResult<Boolean>>
@@ -39,5 +39,9 @@ abstract class AbstractArticleViewModel internal constructor(
     override fun onCleared() {
         super.onCleared()
         _addBookmarkResult.removeObserver(taskResultObserver)
+    }
+
+    fun setShowProgressbar(show: Boolean = false) {
+        _showProgressbar.postValue(show)
     }
 }

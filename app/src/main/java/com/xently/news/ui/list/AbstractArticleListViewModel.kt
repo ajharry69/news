@@ -3,7 +3,6 @@ package com.xently.news.ui.list
 import android.app.Application
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
@@ -18,20 +17,38 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@Suppress("PropertyName")
 abstract class AbstractArticleListViewModel internal constructor(
-    protected val repository: IArticlesRepository,
-    app: Application
-) : AbstractArticleViewModel(repository,app) {
+    app: Application,
+    private val repository: IArticlesRepository
+) : AbstractArticleViewModel(app, repository) {
 
-    @VisibleForTesting
-    val context: Context = app.applicationContext
+    private val context: Context = app.applicationContext
+    private var articleListFetchRetryCount = START_TRY_COUNT
     private val _articleListResults = MutableLiveData<TaskResult<List<Article>>>()
     val articleListResults: LiveData<TaskResult<List<Article>>>
         get() = _articleListResults
     private val _articleListCount = MutableLiveData(0)
     val articleListCount: LiveData<Int>
         get() = _articleListCount
-    private val _statusMessage = MutableLiveData<String>(context.getString(R.string.status_loading))
+    private val _showHorizontalProgressbar = MutableLiveData<Boolean>(false)
+    val showHorizontalProgressbar: LiveData<Boolean>
+        get() = _showHorizontalProgressbar
+    private val _showSwipeRefreshProgressIndicator = MutableLiveData<Boolean>(false)
+    val showSwipeRefreshProgressIndicator: LiveData<Boolean>
+        get() = _showSwipeRefreshProgressIndicator
+
+    /**
+     * status view is view that shows (data) status message on the screen
+     */
+    val showStatusView: LiveData<Boolean>
+        get() = _showProgressbar.asFlow().conflate()
+            .combine(_statusMessage.asFlow().conflate()) { showProgress, statusMsg ->
+                showProgress || !statusMsg.isNullOrBlank()
+            }.combine(articleLists.asFlow()) { showStatus, articles ->
+                showStatus && articles.isNullOrEmpty()
+            }.asLiveData()
+    private val _statusMessage = MutableLiveData<String>(null)
 
     /**
      * returns string resource to be shown as message on UI to update user/client on the
@@ -40,8 +57,16 @@ abstract class AbstractArticleListViewModel internal constructor(
     val statusMessage: LiveData<String>
         get() = _statusMessage
 
+    val startArticleListRefresh = ConflatedBroadcastChannel(false)
     val searchQuery = ConflatedBroadcastChannel<String?>(null)
     val dataSource = ConflatedBroadcastChannel(LOCAL)
+
+    @OptIn(FlowPreview::class)
+    private val _startArticleListRefresh: LiveData<Boolean>
+        get() = startArticleListRefresh.asFlow().combine(searchQuery.asFlow()) { refresh, query ->
+            if (refresh) getArticles(query)
+            refresh
+        }.asLiveData()
 
     @OptIn(FlowPreview::class)
     val articleLists: LiveData<List<Article>>
@@ -51,31 +76,36 @@ abstract class AbstractArticleListViewModel internal constructor(
                     REMOTE -> R.string.status_searching_remote_articles
                     LOCAL -> R.string.status_searching_articles
                 }
-                updateStatusMessageOnSearch(query, message)
+                setStatusMessage(query, message)
                 emitAll(repository.getObservableArticles(query, source))
             }.conflate().asLiveData()
 
-    private val articleListTaskResultsObserver: (TaskResult<List<Article>>) -> Unit = {
+    private val observerArticleListTaskResult: (TaskResult<List<Article>>) -> Unit = {
         when (it) {
             is TaskResult.Success -> {
-                _showProgressbar.postValue(false)
-                val message = if (it.data.isNullOrEmpty()) R.string.status_articles_empty
-                else R.string.status_loading
-                _statusMessage.postValue(context.getString(message))
+                hideLoadingStatus()
+                if (it.data.isNullOrEmpty()) {
+                    setStatusMessage(R.string.status_articles_empty)
+                } else {
+                    articleListFetchRetryCount = START_TRY_COUNT
+                    setStatusMessage(null)
+                }
             }
             is TaskResult.Error -> {
-                _showProgressbar.postValue(false)
-                _statusMessage.postValue(it.errorMessage)
+                hideLoadingStatus()
+                setStatusMessage(it.errorMessage)
             }
             is TaskResult.Loading -> {
-                _showProgressbar.postValue(true)
-                _statusMessage.postValue(context.getString(R.string.status_fetching_remote_articles))
+                setShowProgressbar(true)
+                val showHrPb = (articleLists.value?.size ?: articleListCount.value ?: 0) > 0
+                setShowHorizontalProgressbar(showHrPb)
+                setStatusMessage(R.string.status_fetching_remote_articles)
             }
         }
     }
 
     @OptIn(FlowPreview::class)
-    private val observableArticleListObserver: (List<Article>) -> Unit = {
+    private val observerArticleList: (List<Article>) -> Unit = {
         if (it.isNullOrEmpty()) {
             // initiate a remote data fetch if local data source returned empty list
             viewModelScope.launch {
@@ -87,35 +117,88 @@ abstract class AbstractArticleListViewModel internal constructor(
         _articleListCount.value = it.size
     }
 
+    private val observerShowHorizontalProgressbar: (Boolean) -> Unit = {
+        // do not show two progress bars at the same time
+        // Only show progress bar if(ALL MUST BE MET):
+        //      1. horizontal progress bar is not being shown(it = false)
+        //      2. show progress bar was requested before(value = true)
+        setShowProgressbar(!it && showProgressbar.value ?: false)
+    }
+
+    private val observerShowSwipeRefreshProgressIndicator: (Boolean) -> Unit = {
+        // do not show horizontal progress bar and swipe refresh indicator at the same time
+        // Only show horizontal progress bar if(ALL MUST BE MET):
+        //      1. swipe refresh indicator is not being shown(it = false)
+        //      2. show horizontal progress bar was requested before(value = true)
+        setShowHorizontalProgressbar(!it && _showHorizontalProgressbar.value ?: false)
+    }
+
+    private val observerStartArticleListRefresh: (Boolean) -> Unit = {
+        setShowSwipeRefreshProgressIndicator(it)
+    }
+
     init {
-        _articleListResults.observeForever(articleListTaskResultsObserver)
-        articleLists.observeForever(observableArticleListObserver)
+        articleLists.observeForever(observerArticleList)
+        _articleListResults.observeForever(observerArticleListTaskResult)
+        _startArticleListRefresh.observeForever(observerStartArticleListRefresh)
+        _showHorizontalProgressbar.observeForever(observerShowHorizontalProgressbar)
+        _showSwipeRefreshProgressIndicator.observeForever(observerShowSwipeRefreshProgressIndicator)
     }
 
     /**
      * Fetch article(s) remotely
      */
     fun getArticles(searchQuery: String? = null) {
+        if (articleListFetchRetryCount > MAX_RETRY_COUNT) return
         _articleListResults.postValue(TaskResult.Loading)
-        updateStatusMessageOnSearch(searchQuery, R.string.status_searching_remote_articles)
+        setStatusMessage(searchQuery, R.string.status_searching_remote_articles)
         viewModelScope.launch {
             _articleListResults.postValue(repository.getArticles(searchQuery))
+            articleListFetchRetryCount++
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        articleLists.removeObserver(observableArticleListObserver)
-        _articleListResults.removeObserver(articleListTaskResultsObserver)
+        articleLists.removeObserver(observerArticleList)
+        _articleListResults.removeObserver(observerArticleListTaskResult)
+        _showSwipeRefreshProgressIndicator.removeObserver(observerShowSwipeRefreshProgressIndicator)
+        _startArticleListRefresh.removeObserver(observerStartArticleListRefresh)
+        _showHorizontalProgressbar.removeObserver(observerShowHorizontalProgressbar)
     }
 
-    private fun updateStatusMessageOnSearch(
-        searchQuery: String?,
+    fun setShowHorizontalProgressbar(show: Boolean = false) {
+        _showHorizontalProgressbar.value = show
+    }
+
+    /**
+     * **Use is highly discouraged!** Use [startArticleListRefresh] by calling `offer` or `send` instead
+     */
+    fun setShowSwipeRefreshProgressIndicator(show: Boolean = false) {
+        _showSwipeRefreshProgressIndicator.value = show
+    }
+
+    fun setStatusMessage(message: String? = null) {
+        if (articleLists.value.isNullOrEmpty()) _statusMessage.postValue(message)
+    }
+
+    fun setStatusMessage(@StringRes message: Int) = setStatusMessage(context.getString(message))
+
+    private fun hideLoadingStatus() {
+        startArticleListRefresh.offer(false)
+        setShowHorizontalProgressbar(false)
+        setShowProgressbar(false)
+    }
+
+    private fun setStatusMessage(
+        query: String?,
         @StringRes message: Int = R.string.status_searching_articles
     ) {
-        if (!searchQuery.isNullOrBlank()) {
-            // search initiation is expected
-            _statusMessage.value = context.getString(message)
-        }
+        if (!query.isNullOrBlank()) setStatusMessage(message)
+    }
+
+    companion object {
+        private const val START_TRY_COUNT = 1
+        private const val MAX_RETRY_COUNT = 3
     }
 }

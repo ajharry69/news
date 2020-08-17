@@ -3,6 +3,7 @@ package com.xently.news.ui.list.utils
 import android.content.res.ColorStateList
 import android.widget.ImageButton
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.xently.news.R
 import com.xently.utilities.viewext.getThemedColor
 
@@ -15,4 +16,9 @@ fun switchTintAndContentDescriptionOnBookmark(view: ImageButton, isBookmarked: B
         imageTintList = ColorStateList.valueOf(context.getThemedColor(iconTint))
         contentDescription = context.getString(contentDesc)
     }
+}
+
+@BindingAdapter(value = ["isRefreshing"])
+fun setRefreshing(view: SwipeRefreshLayout, isRefreshing: Boolean = false) {
+    view.isRefreshing = isRefreshing
 }

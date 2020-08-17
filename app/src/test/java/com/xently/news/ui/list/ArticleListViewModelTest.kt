@@ -1,6 +1,7 @@
 package com.xently.news.ui.list
 
 import android.app.Application
+import android.content.Context
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -39,6 +40,7 @@ class ArticleListViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private lateinit var context: Context
     private lateinit var repository: IArticlesRepository
     private lateinit var viewModel: ArticleListViewModel
 
@@ -47,25 +49,9 @@ class ArticleListViewModelTest {
         val local = FakeArticleDataSource(ARTICLE)
         val remote = FakeArticleDataSource(*REMOTE_ARTICLES.toTypedArray(), ARTICLE)
         repository = ArticlesRepository(local, remote, Dispatchers.Unconfined)
-        viewModel = ArticleListViewModel(
-            repository,
-            ApplicationProvider.getApplicationContext() as Application
-        )
-    }
-
-    @Test
-    fun showProgressbar() {
-        // show progress bar is false by default
-        assertThat(viewModel.showProgressbar.getOrAwaitValue(), `is`(false))
-    }
-
-    @Test
-    fun statusMessage() {
-        // status message is loading by default
-        assertThat(
-            viewModel.statusMessage.getOrAwaitValue(),
-            equalTo(viewModel.context.getString(R.string.status_loading))
-        )
+        val app = ApplicationProvider.getApplicationContext() as Application
+        context = app.applicationContext
+        viewModel = ArticleListViewModel(app, repository)
     }
 
     /**
@@ -79,11 +65,10 @@ class ArticleListViewModelTest {
         viewModel.getArticles()
 
         assertThat(viewModel.articleListResults.getOrAwaitValue(), instanceOf(Loading::class.java))
-        assertThat(viewModel.showProgressbar.getOrAwaitValue(), equalTo(true))
         // status is updated to show that articles are being fetched from internet
         assertThat(
             viewModel.statusMessage.getOrAwaitValue(),
-            equalToIgnoringCase(viewModel.context.getString(R.string.status_fetching_remote_articles))
+            equalToIgnoringCase(context.getString(R.string.status_fetching_remote_articles))
         )
 
         mainCoroutineRule.resumeDispatcher()
@@ -101,7 +86,7 @@ class ArticleListViewModelTest {
 
         assertThat(
             viewModel.statusMessage.getOrAwaitValue(),
-            equalToIgnoringCase(viewModel.context.getString(R.string.status_searching_remote_articles))
+            equalToIgnoringCase(context.getString(R.string.status_searching_remote_articles))
         )
         mainCoroutineRule.resumeDispatcher()
     }
@@ -124,7 +109,7 @@ class ArticleListViewModelTest {
         viewModel.articleLists.getValueOrAwaitFlowValue()
         assertThat(
             viewModel.statusMessage.getOrAwaitValue(),
-            equalToIgnoringCase(viewModel.context.getString(message))
+            equalToIgnoringCase(context.getString(message))
         )
     }
 

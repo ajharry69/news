@@ -20,9 +20,9 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 
 class ArticleViewModel @ViewModelInject constructor(
-    private val repository: IArticlesRepository,
-    app: Application
-) : AbstractArticleViewModel(repository, app) {
+    app: Application,
+    private val repository: IArticlesRepository
+) : AbstractArticleViewModel(app, repository) {
     private val _articleFetchResult = MutableLiveData<TaskResult<Article>>()
     val articleFetchResult: LiveData<TaskResult<Article>>
         get() = _articleFetchResult

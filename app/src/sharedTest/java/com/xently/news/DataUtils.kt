@@ -10,7 +10,7 @@ val ARTICLE = Article(
     "Contents of Article 1",
     author = Author("John", "Doe"),
     media = listOf(Medium(1, "", articleId = 1)),
-    tags = listOf("technology", "android", "google", "kotlin"),
+    tags = setOf("technology", "android", "google", "kotlin"),
     url = "https://domain.xyz/1/"
 )
 
@@ -21,7 +21,7 @@ fun createArticles(number: Int): List<Article> {
         Article(
             id.toLong(), "Article $id headline!", "Article $id contents",
             author = Author("AuthorFn$id", "AuthorLn$id"),
-            tags = (0 until it).map { it1 -> "tag$it1" },
+            tags = (0 until it).map { it1 -> "tag$it1" }.toSet(),
             url = "https://domain.xyz/$id/"
         )
     }

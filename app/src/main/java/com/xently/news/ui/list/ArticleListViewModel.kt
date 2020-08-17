@@ -5,8 +5,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import com.xently.news.data.repository.IArticlesRepository
 
 class ArticleListViewModel @ViewModelInject constructor(
-    repository: IArticlesRepository,
-    app: Application
-) : AbstractArticleListViewModel(repository, app) {
+    app: Application,
+    repository: IArticlesRepository
+) : AbstractArticleListViewModel(app, repository) {
     // TODO: Implement the ViewModel
 }

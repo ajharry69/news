@@ -16,7 +16,6 @@
     </data>
 
     <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/article_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutDescription="@xml/article_list_fragment_scene"
@@ -45,7 +44,21 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <FrameLayout
+        <ProgressBar
+            android:id="@+id/progress_horizontal"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:isVisible="@{viewModel.showHorizontalProgressbar}"
+            app:layout_constraintBottom_toBottomOf="@id/appbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/data_status_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -54,14 +67,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appbar">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/articles"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <!--
+             `app:isVisible`
+             -->
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:visibility="visible"
-                app:isVisible="@{!viewModel.showProgressbar}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/article_item" />
+                app:isRefreshing="@{viewModel.showSwipeRefreshProgressIndicator}"
+                app:isVisible="@{!viewModel.showStatusView}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/articles"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/article_item" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -69,14 +96,19 @@
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
                 android:visibility="gone"
-                app:isVisible="@{viewModel.showProgressbar}"
+                app:isVisible="@{viewModel.showStatusView}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible">
 
                 <ProgressBar
-                    android:id="@+id/progress"
+                    android:id="@+id/progress_circular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_margin="8dp"
+                    app:isVisible="@{viewModel.showProgressbar}"
                     app:layout_constraintBottom_toTopOf="@id/data_status"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,9 +124,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/progress"
+                    app:layout_constraintTop_toBottomOf="@id/progress_circular"
                     tools:text="@string/status_searching_articles" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

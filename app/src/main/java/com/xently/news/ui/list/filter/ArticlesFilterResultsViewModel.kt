@@ -6,8 +6,8 @@ import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.ui.list.AbstractArticleListViewModel
 
 class ArticlesFilterResultsViewModel @ViewModelInject constructor(
-    repository: IArticlesRepository,
-    app: Application
-) : AbstractArticleListViewModel(repository, app) {
+    app: Application,
+    repository: IArticlesRepository
+) : AbstractArticleListViewModel(app, repository) {
     // TODO: Implement the ViewModel
 }

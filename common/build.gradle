@@ -41,6 +41,7 @@ dependencies {
     api "com.google.android.material:material:$material_version"
     api "androidx.appcompat:appcompat:$appcompat_version"
     api "androidx.multidex:multidex:$multidex_version"
+    api "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     // Hilt-DI
     api "com.google.dagger:hilt-android:$hilt_version"

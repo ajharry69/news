@@ -65,8 +65,8 @@ class ArticlesFilterResultsViewModelTest {
     ): ArticlesFilterResultsViewModel {
         val repository = ArticlesRepository(local, remote)
         return ArticlesFilterResultsViewModel(
-            repository,
-            ApplicationProvider.getApplicationContext() as Application
+            ApplicationProvider.getApplicationContext() as Application,
+            repository
         )
     }
 }

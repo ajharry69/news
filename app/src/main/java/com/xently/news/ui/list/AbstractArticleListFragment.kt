@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.xently.news.R
 import com.xently.news.data.model.Article
 import com.xently.news.databinding.ArticleListFragmentBinding
 import com.xently.news.ui.list.utils.ArticlesAdapter
-import com.xently.news.ui.list.utils.OnActionButtonClickListener
 import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.ListFragment
+import com.xently.utilities.viewext.showSnackBar
 
-abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClickListener {
+abstract class AbstractArticleListFragment : ListFragment(),
+    ArticlesAdapter.OnActionButtonClickListener {
     private lateinit var articlesAdapter: ArticlesAdapter
     abstract val viewModel: AbstractArticleListViewModel
 
@@ -24,6 +26,10 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
         when (view.id) {
             R.id.share -> startShareArticleIntent(view.context, article)
             R.id.add_bookmark -> viewModel.addBookmark(article.id, !article.bookmarked)
+            R.id.add_comment -> showSnackBar(
+                "TODO: navigate to comments screen...",
+                Snackbar.LENGTH_LONG
+            ) // TODO: navigate to comments screen...
         }
     }
 
@@ -41,16 +47,25 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
                 setSupportActionBar(toolbar)
             }
             setupToolbar(toolbar)
-            viewModel = this@AbstractArticleListFragment.viewModel
-            lifecycleOwner = this@AbstractArticleListFragment
             filtered = false
             articles.adapter = articlesAdapter
         }
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.startArticleListRefresh.offer(true)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        binding.run {
+            viewModel = this@AbstractArticleListFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
         viewModel.articleLists.observe(viewLifecycleOwner, Observer {
             articlesAdapter.submitList(it)
         })
@@ -66,9 +81,14 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.search_articles) {
-            activity?.onSearchRequested() ?: false
-        } else super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.search_articles -> activity?.onSearchRequested() ?: false
+            R.id.refresh -> {
+                viewModel.startArticleListRefresh.offer(true)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCreateSearchIdentifier() = SEARCH_IDENTIFIER

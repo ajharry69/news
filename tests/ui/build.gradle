@@ -16,6 +16,7 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
+    // used by DataBinding idling resource
     buildFeatures {
         dataBinding true
     }
