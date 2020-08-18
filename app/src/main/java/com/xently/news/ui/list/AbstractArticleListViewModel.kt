@@ -31,10 +31,10 @@ abstract class AbstractArticleListViewModel internal constructor(
     private val _articleListCount = MutableLiveData(0)
     val articleListCount: LiveData<Int>
         get() = _articleListCount
-    private val _showHorizontalProgressbar = MutableLiveData<Boolean>(false)
+    private val _showHorizontalProgressbar = MutableLiveData(false)
     val showHorizontalProgressbar: LiveData<Boolean>
         get() = _showHorizontalProgressbar
-    private val _showSwipeRefreshProgressIndicator = MutableLiveData<Boolean>(false)
+    private val _showSwipeRefreshProgressIndicator = MutableLiveData(false)
     val showSwipeRefreshProgressIndicator: LiveData<Boolean>
         get() = _showSwipeRefreshProgressIndicator
 

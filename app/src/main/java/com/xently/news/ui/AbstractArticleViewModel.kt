@@ -17,7 +17,7 @@ abstract class AbstractArticleViewModel internal constructor(
     private val _addBookmarkResult = MutableLiveData<TaskResult<Boolean>>()
     val addBookmarkResult: LiveData<TaskResult<Boolean>>
         get() = _addBookmarkResult
-    protected val _showProgressbar = MutableLiveData<Boolean>(false)
+    protected val _showProgressbar = MutableLiveData(false)
     val showProgressbar: LiveData<Boolean>
         get() = _showProgressbar
 

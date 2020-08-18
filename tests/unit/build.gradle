@@ -48,5 +48,5 @@ dependencies {
     api "androidx.room:room-testing:$room_version"
     api "com.google.dagger:hilt-android-testing:$hilt_version"
     api "androidx.work:work-testing:$work_version"
-    api 'app.cash.turbine:turbine:0.1.1'
+    api 'app.cash.turbine:turbine:0.2.0'
 }
