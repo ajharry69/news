@@ -5,6 +5,7 @@ import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.data
 import com.xently.common.data.listData
+import com.xently.common.di.qualifiers.coroutines.IODispatcher
 import com.xently.common.utils.wrapEspressoIdlingResource
 import com.xently.news.data.model.Article
 import com.xently.news.data.source.IArticleDataSource
@@ -21,6 +22,7 @@ class ArticlesRepository @Inject constructor(
     private val local: IArticleDataSource,
     @RemoteArticlesDataSource
     private val remote: IArticleDataSource,
+    @IODispatcher
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : IArticlesRepository {
     override suspend fun saveArticles(vararg articles: Article) = wrapEspressoIdlingResource {

@@ -1,5 +1,6 @@
 package com.xently.news.di.modules
 
+import com.xently.common.di.qualifiers.coroutines.IODispatcher
 import com.xently.news.data.source.IArticleDataSource
 import com.xently.news.data.source.local.ArticleDAO
 import com.xently.news.data.source.local.ArticleLocalDataSource
@@ -30,6 +31,7 @@ object DataSourceModule {
     @RemoteArticlesDataSource
     fun provideArticlesRemoteDataSource(
         service: ArticleService,
+        @IODispatcher
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO
     ): IArticleDataSource = ArticleRemoteDataSource(service, ioDispatcher)
 }

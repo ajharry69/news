@@ -168,14 +168,14 @@ abstract class AbstractArticleListViewModel internal constructor(
     }
 
     fun setShowHorizontalProgressbar(show: Boolean = false) {
-        _showHorizontalProgressbar.value = show
+        _showHorizontalProgressbar.postValue(show)
     }
 
     /**
      * **Use is highly discouraged!** Use [startArticleListRefresh] by calling `offer` or `send` instead
      */
     fun setShowSwipeRefreshProgressIndicator(show: Boolean = false) {
-        _showSwipeRefreshProgressIndicator.value = show
+        _showSwipeRefreshProgressIndicator.postValue(show)
     }
 
     fun setStatusMessage(message: String? = null) {

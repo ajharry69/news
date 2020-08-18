@@ -1,5 +1,6 @@
 package com.xently.news.di.modules
 
+import com.xently.common.di.qualifiers.coroutines.IODispatcher
 import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.data.source.IArticleDataSource
@@ -23,6 +24,7 @@ object RepositoryModule {
         local: IArticleDataSource,
         @RemoteArticlesDataSource
         remote: IArticleDataSource,
+        @IODispatcher
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO
     ): IArticlesRepository = ArticlesRepository(local, remote, ioDispatcher)
 }
