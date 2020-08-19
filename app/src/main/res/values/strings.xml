@@ -6,8 +6,8 @@
     <string name="status_searching_articles">Searching articles…</string>
     <string name="status_searching_remote_articles">Searching remote articles…</string>
     <string name="status_loading">Loading, please wait…</string>
-    <string name="status_fetching_remote_articles">Fetching articles from internet…</string>
-    <string name="status_articles_empty">No article(s) found with the search parameters…</string>
+    <string name="status_fetching_remote_articles">Fetching articles from server…</string>
+    <string name="status_articles_empty">No articles found!</string>
     <string name="search_articles">Search articles…</string>
     <string name="content_desc_media">news media</string>
     <string name="share">Share</string>
@@ -105,4 +105,5 @@
     <string name="add_comment">Add Comment</string>
     <string name="flag_inappropriate">Flag as inappropriate</string>
     <string name="refresh">Refresh</string>
+    <string name="retry">Retry</string>
 </resources>

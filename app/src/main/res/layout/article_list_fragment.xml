@@ -9,6 +9,10 @@
             name="viewModel"
             type="com.xently.news.ui.list.AbstractArticleListViewModel" />
 
+        <import
+            alias="Click"
+            type="com.xently.news.ui.list.utils.ClickHandlerKt" />
+
         <variable
             name="filtered"
             type="Boolean" />
@@ -67,16 +71,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appbar">
 
-            <!--
-             `app:isVisible`
-             -->
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:visibility="visible"
                 app:isRefreshing="@{viewModel.showSwipeRefreshProgressIndicator}"
-                app:isVisible="@{!viewModel.showStatusView}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,12 +91,12 @@
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/status_container"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
                 android:visibility="gone"
-                app:isVisible="@{viewModel.showStatusView}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,14 +118,37 @@
                     android:id="@+id/data_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
                     android:text="@{viewModel.statusMessage}"
+                    android:textAlignment="gravity"
                     android:textAppearance="?attr/textAppearanceHeadline6"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:isVisible="@{viewModel.statusMessage != null}"
+                    app:layout_constraintBottom_toTopOf="@id/retry"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/progress_circular"
                     tools:text="@string/status_searching_articles" />
+
+                <!--
+                 TODO: Enable button if not retrying and disable otherwise
+                 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/retry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:enabled="@{!viewModel.showProgressbar}"
+                    android:onClick="@{(v) -> Click.onRetryButtonClick(viewModel)}"
+                    android:text="@string/retry"
+                    android:visibility="gone"
+                    app:isVisible="@{!viewModel.showProgressbar}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/data_status"
+                    app:layout_constraintStart_toStartOf="@id/data_status"
+                    app:layout_constraintTop_toBottomOf="@id/data_status"
+                    tools:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.motion.widget.MotionLayout>

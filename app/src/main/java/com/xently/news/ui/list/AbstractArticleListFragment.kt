@@ -3,7 +3,7 @@ package com.xently.news.ui.list
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.xently.news.R
 import com.xently.news.data.model.Article
@@ -66,14 +66,20 @@ abstract class AbstractArticleListFragment : ListFragment(),
             viewModel = this@AbstractArticleListFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
-        viewModel.articleLists.observe(viewLifecycleOwner, Observer {
+        viewModel.articleLists.observe(viewLifecycleOwner, {
             articlesAdapter.submitList(it)
+        })
+        viewModel.showStatusView.observe(viewLifecycleOwner, {
+            binding.run {
+                swipeRefresh.isVisible = !it
+                statusContainer.isVisible = it
+            }
         })
     }
 
     override fun onDestroyView() {
-        _binding = null
         super.onDestroyView()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -15,6 +15,11 @@ import com.xently.utilities.viewext.showViews
 
 data class ChipData(val text: String, @DrawableRes val icon: Int? = null)
 
+@BindingAdapter(value = ["android:enabled"])
+fun setEnabled(view: View, enabled: Boolean = false) {
+    view.isEnabled = enabled
+}
+
 @BindingAdapter(value = ["isVisible"])
 fun setVisible(view: View, isVisible: Boolean) {
     if (isVisible) showViews(view) else hideViews(view)

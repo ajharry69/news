@@ -53,6 +53,9 @@ class ArticlesAdapter constructor(private val clickListener: OnActionButtonClick
                 addBookmark.setOnClickListener {
                     clickListener?.onActionButtonClick(article, it)
                 }
+                addComment.setOnClickListener {
+                    clickListener?.onActionButtonClick(article, it)
+                }
             }
         }
     }

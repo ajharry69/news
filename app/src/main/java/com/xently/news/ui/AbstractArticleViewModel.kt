@@ -14,6 +14,7 @@ abstract class AbstractArticleViewModel internal constructor(
     app: Application,
     private val repository: IArticlesRepository
 ) : AndroidViewModel(app) {
+    protected val TAG: String = this::class.java.simpleName
     private val _addBookmarkResult = MutableLiveData<TaskResult<Boolean>>()
     val addBookmarkResult: LiveData<TaskResult<Boolean>>
         get() = _addBookmarkResult
@@ -22,7 +23,7 @@ abstract class AbstractArticleViewModel internal constructor(
         get() = _showProgressbar
 
     protected val taskResultObserver: (TaskResult<Any>) -> Unit = {
-        _showProgressbar.value = it is TaskResult.Loading
+        onBookmarkTaskResultsReceived(it)
     }
 
     init {
@@ -36,12 +37,16 @@ abstract class AbstractArticleViewModel internal constructor(
         }
     }
 
+    fun setShowProgressbar(show: Boolean = false) {
+        _showProgressbar.postValue(show)
+    }
+
     override fun onCleared() {
         super.onCleared()
         _addBookmarkResult.removeObserver(taskResultObserver)
     }
 
-    fun setShowProgressbar(show: Boolean = false) {
-        _showProgressbar.postValue(show)
+    open fun onBookmarkTaskResultsReceived(results: TaskResult<Any>) {
+        setShowProgressbar(results is TaskResult.Loading)
     }
 }
