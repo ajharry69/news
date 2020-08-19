@@ -2,13 +2,39 @@ package com.xently.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.*
 
+@Entity(
+    tableName = "comments",
+    foreignKeys = [
+        ForeignKey(
+            entity = Article::class,
+            parentColumns = ["id"],
+            childColumns = ["articleId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(
+            name = "comments_id_article_id_idx",
+            value = ["id", "articleId"],
+            unique = true
+        ),
+        Index(
+            name = "comments_article_id_idx",
+            value = ["articleId"]
+        )
+    ],
+)
 data class Comment(
-    val id: Long = Long.MIN_VALUE,
-    val message: String = "",
-    val author: Author = Author(),
+    @PrimaryKey(autoGenerate = false)
+    var id: Long = Long.MIN_VALUE,
+    var message: String = "",
+    @Embedded
+    var author: Author = Author(),
+    @Ignore
     val replies: List<Comment> = emptyList(),
-    val articleId: Long = Long.MIN_VALUE,
+    var articleId: Long = Long.MIN_VALUE,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),

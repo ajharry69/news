@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="status_loading_comments">Loading comments…</string>
+    <string name="search_comments">Search comments</string>
+</resources>

@@ -4,16 +4,19 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.xently.data.source.local.daos.ArticleDAO
+import com.xently.data.source.local.daos.CommentsDAO
 import com.xently.data.source.local.daos.MediaDAO
 import com.xently.models.Article
 import com.xently.models.ArticleFTS
+import com.xently.models.Comment
 import com.xently.models.Medium
 
 @Database(
     entities = [
         ArticleFTS::class,
         Article::class,
-        Medium::class
+        Medium::class,
+        Comment::class,
     ],
     version = 1,
     exportSchema = true
@@ -22,4 +25,5 @@ import com.xently.models.Medium
 abstract class NewsDatabase : RoomDatabase() {
     abstract val articlesDAO: ArticleDAO
     abstract val mediaDAO: MediaDAO
+    abstract val commentsDAO: CommentsDAO
 }

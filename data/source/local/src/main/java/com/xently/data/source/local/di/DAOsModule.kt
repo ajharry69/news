@@ -2,6 +2,7 @@ package com.xently.data.source.local.di
 
 import com.xently.data.source.local.NewsDatabase
 import com.xently.data.source.local.daos.ArticleDAO
+import com.xently.data.source.local.daos.CommentsDAO
 import com.xently.data.source.local.daos.MediaDAO
 import dagger.Module
 import dagger.Provides
@@ -16,4 +17,7 @@ object DAOsModule {
 
     @Provides
     fun provideMediaDAO(database: NewsDatabase): MediaDAO = database.mediaDAO
+
+    @Provides
+    fun provideCommentsDAO(database: NewsDatabase): CommentsDAO = database.commentsDAO
 }

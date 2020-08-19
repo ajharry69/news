@@ -1,3 +1,4 @@
+include ':utilities:databinding'
 include ':data:source:remote'
 include ':data:source:local'
 include ':data:models'

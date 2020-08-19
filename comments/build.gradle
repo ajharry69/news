@@ -67,6 +67,9 @@ android {
 dependencies {
     implementation project(path: ':common')
     implementation project(path: ':data:models')
+    implementation project(path: ':data:source:local')
+    implementation project(path: ':data:source:remote')
+    implementation project(path: ':utilities:databinding')
 
     // Hilt-DI
     implementation "com.google.dagger:hilt-android:$hilt_version"

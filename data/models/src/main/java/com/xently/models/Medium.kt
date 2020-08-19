@@ -19,15 +19,15 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index(
-            name = "media_article_id_idx",
+            name = "media_id_article_id_idx",
             value = ["id", "articleId"],
             unique = true
         ),
         Index(
-            name = "articles_id_idx",
+            name = "media_article_id_idx",
             value = ["articleId"]
         )
-    ]
+    ],
 )
 data class Medium(
     @PrimaryKey(autoGenerate = true) val id: Long,
