@@ -8,7 +8,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.xently.news.ARTICLE
+import com.xently.models.util.ARTICLE
 import com.xently.news.HiltTestActivity
 import com.xently.news.R
 import com.xently.news.di.modules.DataSourceModule

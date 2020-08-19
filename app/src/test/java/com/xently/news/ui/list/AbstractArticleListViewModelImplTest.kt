@@ -7,7 +7,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.xently.news.R
-import com.xently.news.data.model.Article
+import com.xently.models.Article
 import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.fakes.FakeArticleDataSource

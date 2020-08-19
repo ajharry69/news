@@ -3,7 +3,7 @@ package com.xently.news.ui.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.xently.news.data.model.Article
+import com.xently.models.Article
 
 fun startShareArticleIntent(context: Context, article: Article) {
     val shareIntent = Intent.createChooser(

@@ -1,7 +1,7 @@
 package com.xently.news.ui.list.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.xently.news.data.model.Article
+import com.xently.models.Article
 
 class ArticleDiffUtil : DiffUtil.ItemCallback<Article>() {
     override fun areItemsTheSame(oldItem: Article, newItem: Article) = oldItem.id == newItem.id

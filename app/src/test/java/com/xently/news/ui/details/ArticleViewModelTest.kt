@@ -8,9 +8,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult.Loading
-import com.xently.news.ARTICLE
-import com.xently.news.createArticles
-import com.xently.news.data.model.Article
+import com.xently.models.util.ARTICLE
+import com.xently.models.util.createArticles
+import com.xently.models.Article
 import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.fakes.FakeArticleDataSource

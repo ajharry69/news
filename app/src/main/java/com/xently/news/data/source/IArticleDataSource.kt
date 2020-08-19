@@ -2,7 +2,7 @@ package com.xently.news.data.source
 
 import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
-import com.xently.news.data.model.Article
+import com.xently.models.Article
 import kotlinx.coroutines.flow.Flow
 
 interface IArticleDataSource {

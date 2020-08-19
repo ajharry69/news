@@ -3,17 +3,15 @@ package com.xently.news.ui.utils
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
-import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.chip.ChipGroup.LayoutParams.WRAP_CONTENT
+import com.xently.models.util.ChipData
 import com.xently.utilities.viewext.hideViews
 import com.xently.utilities.viewext.showViews
-
-data class ChipData(val text: String, @DrawableRes val icon: Int? = null)
 
 @BindingAdapter(value = ["android:enabled"])
 fun setEnabled(view: View, enabled: Boolean = false) {

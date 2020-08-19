@@ -12,7 +12,7 @@
 
         <variable
             name="article"
-            type="com.xently.news.data.model.Article" />
+            type="com.xently.models.Article" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -18,12 +18,6 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "com.xently.news.NewsTestRunner"
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/db/schemas/")
-                arg("room.incremental", "true")
-            }
-        }
     }
 
     buildTypes {
@@ -88,18 +82,22 @@ configurations.all {
 dependencies {
     implementation project(path: ':common')
     implementation project(path: ':media')
+    implementation project(path: ':comments')
+    implementation project(path: ':data:models')
+    implementation project(path: ':data:source:local')
+    implementation project(path: ':data:source:remote')
 
     // Hilt-DI
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     kapt "androidx.hilt:hilt-compiler:$hilt_jetpack_version"
 
+    // Room
+    kapt "androidx.room:room-compiler:$room_version"
+
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-
-    // Room
-    kapt "androidx.room:room-compiler:$room_version"
 
     // Glide
     kapt "com.github.bumptech.glide:compiler:$glide_version"

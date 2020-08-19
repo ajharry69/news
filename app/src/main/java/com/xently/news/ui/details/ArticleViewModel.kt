@@ -8,7 +8,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.TaskResult
-import com.xently.news.data.model.Article
+import com.xently.models.Article
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.ui.AbstractArticleViewModel
 import kotlinx.coroutines.FlowPreview

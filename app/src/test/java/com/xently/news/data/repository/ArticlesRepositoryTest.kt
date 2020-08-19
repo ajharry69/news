@@ -7,9 +7,9 @@ import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult
 import com.xently.common.data.data
-import com.xently.news.ARTICLE
-import com.xently.news.createArticles
-import com.xently.news.data.model.Article
+import com.xently.models.util.ARTICLE
+import com.xently.models.util.createArticles
+import com.xently.models.Article
 import com.xently.news.data.source.IArticleDataSource
 import com.xently.news.fakes.FakeArticleDataSource
 import com.xently.tests.unit.assertDataEqual

@@ -1,8 +1,8 @@
 package com.xently.news.fakes
 
-import com.xently.news.data.model.Article
-import com.xently.news.data.model.ArticleWithMedia
-import com.xently.news.data.source.local.ArticleDAO
+import com.xently.models.Article
+import com.xently.models.ArticleWithMedia
+import com.xently.data.source.local.daos.ArticleDAO
 import kotlinx.coroutines.flow.Flow
 
 class FakeArticleDAO : ArticleDAO {

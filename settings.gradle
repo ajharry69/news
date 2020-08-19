@@ -1,3 +1,7 @@
+include ':data:source:remote'
+include ':data:source:local'
+include ':data:models'
+include ':comments'
 include ':media'
 include ':utilities:viewext'
 include ':utilities:ui'

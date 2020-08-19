@@ -1,0 +1,92 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin' // apply below kotlin-kapt
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
+android {
+    compileSdkVersion sdk_version
+    buildToolsVersion build_tools_version
+
+    defaultConfig {
+        minSdkVersion min_sdk_version
+        targetSdkVersion sdk_version
+        versionCode version_code
+        versionName version_name
+        vectorDrawables.useSupportLibrary = true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        dataBinding true
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = jvm_target_version
+            freeCompilerArgs += [
+                    "-Xuse-experimental=kotlin.Experimental",
+                    '-Xopt-in=kotlin.time.ExperimentalTime',
+                    '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+            ]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        def srcDir = 'src/sharedTest/java'
+        test {
+            java.srcDirs += srcDir
+        }
+        androidTest {
+            java.srcDirs += srcDir
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true // required to not break unit tests
+        }
+    }
+}
+
+dependencies {
+    implementation project(path: ':common')
+    implementation project(path: ':data:models')
+
+    // Hilt-DI
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    kapt "androidx.hilt:hilt-compiler:$hilt_jetpack_version"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    // Unit tests
+    testImplementation project(path: ':tests:unit')
+    kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // Instrumentation/UI tests
+    androidTestImplementation project(path: ':tests:ui')
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+    // Testing code should not be included in the main code.
+    // Once https://issuetracker.google.com/128612536 is fixed this can be fixed.
+    debugImplementation("androidx.fragment:fragment-testing:$fragment_version") {
+        exclude group: 'androidx.test', module: 'core'
+    }
+}

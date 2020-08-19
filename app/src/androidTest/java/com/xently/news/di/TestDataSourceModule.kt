@@ -1,7 +1,7 @@
 package com.xently.news.di
 
-import com.xently.news.ARTICLE
-import com.xently.news.createArticles
+import com.xently.models.util.ARTICLE
+import com.xently.models.util.createArticles
 import com.xently.news.data.source.IArticleDataSource
 import com.xently.news.di.qualifiers.LocalArticlesDataSource
 import com.xently.news.di.qualifiers.RemoteArticlesDataSource

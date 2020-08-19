@@ -7,8 +7,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.xently.models.Article
 import com.xently.news.R
-import com.xently.news.data.model.Article
 import com.xently.news.databinding.ArticleItemBinding
 import com.xently.news.ui.details.ArticleFragmentArgs
 

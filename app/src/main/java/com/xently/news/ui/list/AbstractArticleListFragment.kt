@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.xently.news.R
-import com.xently.news.data.model.Article
+import com.xently.models.Article
 import com.xently.news.databinding.ArticleListFragmentBinding
 import com.xently.news.ui.list.utils.ArticlesAdapter
 import com.xently.news.ui.utils.startShareArticleIntent

@@ -11,9 +11,9 @@ import com.xently.common.data.Source
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult.Loading
-import com.xently.news.ARTICLE
+import com.xently.models.util.ARTICLE
 import com.xently.news.R
-import com.xently.news.createArticles
+import com.xently.models.util.createArticles
 import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.fakes.FakeArticleDataSource

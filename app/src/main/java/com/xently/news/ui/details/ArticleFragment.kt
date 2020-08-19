@@ -12,7 +12,7 @@ import com.xently.common.data.errorMessage
 import com.xently.media.ui.MediaFragment
 import com.xently.news.BR
 import com.xently.news.R
-import com.xently.news.data.model.Article
+import com.xently.models.Article
 import com.xently.news.databinding.ArticleFragmentBinding
 import com.xently.news.ui.utils.setChips
 import com.xently.news.ui.utils.startShareArticleIntent

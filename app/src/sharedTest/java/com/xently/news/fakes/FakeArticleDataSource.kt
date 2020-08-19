@@ -8,8 +8,8 @@ import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Error
 import com.xently.common.data.TaskResult.Success
 import com.xently.common.data.listData
-import com.xently.news.data.model.Article
-import com.xently.news.data.model.ftsFilter
+import com.xently.models.Article
+import com.xently.models.ftsFilter
 import com.xently.news.data.source.IArticleDataSource
 import kotlinx.coroutines.flow.map
 
