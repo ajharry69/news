@@ -1,5 +1,6 @@
 package com.xently.articles.comments.data.source
 
+import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.data.source.local.daos.CommentsDAO
 import com.xently.models.Comment
@@ -12,11 +13,15 @@ class CommentsLocalDataSource @Inject constructor(private val dao: CommentsDAO) 
         TODO("Not yet implemented")
     }
 
-    override suspend fun getComments(articleId: Long): TaskResult<List<Comment>> {
+    override suspend fun getComments(articleId: Long, searchQuery: String?): TaskResult<List<Comment>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getObservableComments(articleId: Long): Flow<List<Comment>> {
+    override suspend fun getObservableComments(
+        articleId: Long,
+        searchQuery: String?,
+        source: Source
+    ): Flow<List<Comment>> {
         TODO("Not yet implemented")
     }
 

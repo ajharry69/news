@@ -3,6 +3,7 @@ package com.xently.models
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.*
+import java.util.*
 
 @Entity(
     tableName = "comments",
@@ -60,5 +61,13 @@ data class Comment(
         override fun createFromParcel(parcel: Parcel): Comment = Comment(parcel)
 
         override fun newArray(size: Int): Array<Comment?> = arrayOfNulls(size)
+    }
+}
+
+fun Collection<Comment>.ftsFilter(query: String?): List<Comment> {
+    return if (query.isNullOrBlank()) toList() else {
+        filter {
+            it.message.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))
+        }
     }
 }
