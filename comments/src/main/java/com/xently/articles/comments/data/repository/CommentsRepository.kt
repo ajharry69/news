@@ -8,6 +8,7 @@ import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.listData
 import com.xently.common.di.qualifiers.coroutines.IODispatcher
+import com.xently.common.utils.wrapEspressoIdlingResource
 import com.xently.models.Comment
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,17 +23,21 @@ class CommentsRepository @Inject constructor(
     @IODispatcher
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ICommentsRepository {
-    override suspend fun addComments(vararg comments: Comment) = withContext(ioDispatcher) {
-        remote.addComments(*comments).run {
-            local.addComments(*listData.toTypedArray())
+    override suspend fun addComments(vararg comments: Comment) = wrapEspressoIdlingResource {
+        withContext(ioDispatcher) {
+            remote.addComments(*comments).run {
+                local.addComments(*listData.toTypedArray())
+            }
         }
     }
 
     override suspend fun getComments(articleId: Long, searchQuery: String?) =
-        withContext(ioDispatcher) {
-            remote.getComments(articleId, searchQuery).run {
-                local.addComments(*listData.toTypedArray())
-                local.getComments(articleId, searchQuery)
+        wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                remote.getComments(articleId, searchQuery).run {
+                    local.addComments(*listData.toTypedArray())
+                    local.getComments(articleId, searchQuery)
+                }
             }
         }
 
@@ -40,14 +45,18 @@ class CommentsRepository @Inject constructor(
         articleId: Long,
         searchQuery: String?,
         source: Source
-    ) = when (source) {
-        REMOTE -> remote.getObservableComments(articleId, searchQuery, source)
-        LOCAL -> local.getObservableComments(articleId, searchQuery, source)
+    ) = wrapEspressoIdlingResource {
+        when (source) {
+            REMOTE -> remote.getObservableComments(articleId, searchQuery, source)
+            LOCAL -> local.getObservableComments(articleId, searchQuery, source)
+        }
     }
 
-    override suspend fun deleteComment(comment: Comment) = withContext(ioDispatcher) {
-        local.deleteComment(comment).run {
-            remote.deleteComment(comment)
+    override suspend fun deleteComment(comment: Comment) = wrapEspressoIdlingResource {
+        withContext(ioDispatcher) {
+            local.deleteComment(comment).run {
+                remote.deleteComment(comment)
+            }
         }
     }
 }

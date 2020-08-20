@@ -445,3 +445,5 @@ fun ImageView.setImageFromPath(imagePath: String) {
         setImageBitmap(bitmap)
     }
 }
+
+fun EditText.textAsString(): String? = text.let { if (it.isNullOrBlank()) null else it.toString() }
