@@ -2,7 +2,7 @@ package com.xently.common.data.source.remote
 
 import com.xently.common.data.TaskResult
 import com.xently.common.data.models.ServerError
-import com.xently.common.data.source.BaseDataSource
+import com.xently.common.data.source.AbstractDataSource
 import com.xently.common.utils.JSON_CONVERTER
 import com.xently.common.utils.Log
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,8 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-abstract class BaseRemoteDataSource<M>(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) :
-    BaseDataSource<M>() {
+abstract class AbstractRemoteDataSource<M>(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) :
+    AbstractDataSource<M>() {
     @Suppress("UNCHECKED_CAST", "BlockingMethodInNonBlockingContext")
     protected suspend fun <T> sendRequest(request: suspend () -> Response<T>): TaskResult<T> {
         return try {

@@ -6,13 +6,13 @@ import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Error
 import com.xently.common.data.TaskResult.Success
-import com.xently.common.data.source.BaseDataSource
+import com.xently.common.data.source.AbstractDataSource
 import com.xently.models.Article
 import com.xently.models.ftsFilter
 import com.xently.news.data.source.IArticleDataSource
 import kotlinx.coroutines.flow.map
 
-class FakeArticleDataSource(vararg articles: Article) : BaseDataSource<Article>(*articles),
+class FakeArticleDataSource(vararg articles: Article) : AbstractDataSource<Article>(*articles),
     IArticleDataSource {
     override suspend fun saveArticles(vararg articles: Article) =
         Success(articles.toList()).updateObservables()

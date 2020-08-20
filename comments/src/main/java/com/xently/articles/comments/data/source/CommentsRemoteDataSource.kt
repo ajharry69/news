@@ -5,7 +5,7 @@ import androidx.lifecycle.asFlow
 import com.xently.common.data.Source
 import com.xently.common.data.TaskResult.Success
 import com.xently.common.data.data
-import com.xently.common.data.source.remote.BaseRemoteDataSource
+import com.xently.common.data.source.remote.AbstractRemoteDataSource
 import com.xently.common.di.qualifiers.coroutines.IODispatcher
 import com.xently.data.source.remote.services.CommentService
 import com.xently.models.Comment
@@ -18,7 +18,7 @@ class CommentsRemoteDataSource @Inject constructor(
     private val service: CommentService,
     @IODispatcher
     ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : BaseRemoteDataSource<Comment>(ioDispatcher), ICommentsDataSource {
+) : AbstractRemoteDataSource<Comment>(ioDispatcher), ICommentsDataSource {
     override suspend fun addComments(vararg comments: Comment) = Success(comments.mapNotNull {
         sendRequest {
             service.addComment(it.articleId, it)

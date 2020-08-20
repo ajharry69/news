@@ -5,7 +5,7 @@ import androidx.lifecycle.asFlow
 import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Success
-import com.xently.common.data.source.remote.BaseRemoteDataSource
+import com.xently.common.data.source.remote.AbstractRemoteDataSource
 import com.xently.data.source.remote.services.ArticleService
 import com.xently.models.Article
 import com.xently.models.ftsFilter
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class ArticleRemoteDataSource @Inject constructor(
     private val service: ArticleService,
     ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseRemoteDataSource<Article>(ioDispatcher), IArticleDataSource {
+) : AbstractRemoteDataSource<Article>(ioDispatcher), IArticleDataSource {
     override suspend fun saveArticles(vararg articles: Article) =
         Success(articles.toList()).updateObservables()
 

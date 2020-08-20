@@ -6,7 +6,7 @@ import com.xently.common.data.data
 import com.xently.common.data.listData
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
-abstract class BaseDataSource<M>(vararg objects: M) {
+abstract class AbstractDataSource<M>(vararg objects: M) {
     protected val TAG = this::class.java.simpleName
     protected val MOCK_DATABASE = mutableSetOf<M>()
     protected val observables = MutableLiveData<List<M>>()
