@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="status_loading_comments">Loading comments…</string>
     <string name="search_comments">Search comments</string>
+    <string name="status_loading_comments">Loading comments…</string>
+    <string name="status_searching_comments">Searching comments…</string>
+    <string name="status_searching_remote_comments">Searching remote comments…</string>
+    <string name="status_fetching_remote_comments">Fetching comments from server…</string>
+    <string name="status_comments_empty">No comments found!</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.xently.articles.comments.ui.utils
 
-import org.w3c.dom.Comment
+import com.xently.models.Comment
 
 fun onRetryButtonClicked(comment: Comment) {
 

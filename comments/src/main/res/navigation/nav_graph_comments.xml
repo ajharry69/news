@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_comments"
+    app:startDestination="@id/dest_article_comments">
+
+    <fragment
+        android:id="@+id/dest_article_comments"
+        android:name="com.xently.articles.comments.ui.CommentsFragment"
+        android:label="@null"
+        tools:layout="@layout/comments_fragment">
+        <argument
+            android:name="articleId"
+            app:argType="long" />
+        <argument
+            android:name="article"
+            android:defaultValue="@null"
+            app:argType="com.xently.models.Article"
+            app:nullable="true" />
+    </fragment>
+</navigation>

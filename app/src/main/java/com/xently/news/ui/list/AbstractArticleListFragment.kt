@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.google.android.material.snackbar.Snackbar
-import com.xently.news.R
+import androidx.navigation.findNavController
+import androidx.navigation.navOptions
+import com.xently.articles.comments.ui.CommentsFragmentArgs
 import com.xently.models.Article
+import com.xently.news.R
 import com.xently.news.databinding.ArticleListFragmentBinding
 import com.xently.news.ui.list.utils.ArticlesAdapter
 import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.ListFragment
-import com.xently.utilities.viewext.showSnackBar
 
 abstract class AbstractArticleListFragment : ListFragment(),
     ArticlesAdapter.OnActionButtonClickListener {
@@ -26,10 +27,15 @@ abstract class AbstractArticleListFragment : ListFragment(),
         when (view.id) {
             R.id.share -> startShareArticleIntent(view.context, article)
             R.id.add_bookmark -> viewModel.addBookmark(article.id, !article.bookmarked)
-            R.id.add_comment -> showSnackBar(
-                "TODO: navigate to comments screen...",
-                Snackbar.LENGTH_LONG
-            ) // TODO: navigate to comments screen...
+            R.id.add_comment -> {
+                view.findNavController().navigate(
+                    R.id.nav_graph_comments,
+                    CommentsFragmentArgs(article.id, article).toBundle(),
+                    navOptions {
+                        launchSingleTop = true
+                    },
+                )
+            }
         }
     }
 

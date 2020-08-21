@@ -5,14 +5,17 @@ import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navOptions
 import com.google.android.material.snackbar.Snackbar
+import com.xently.articles.comments.ui.CommentsFragmentArgs
 import com.xently.common.data.TaskResult
 import com.xently.common.data.errorMessage
 import com.xently.media.ui.MediaFragment
+import com.xently.models.Article
 import com.xently.news.BR
 import com.xently.news.R
-import com.xently.models.Article
 import com.xently.news.databinding.ArticleFragmentBinding
 import com.xently.news.ui.utils.setChips
 import com.xently.news.ui.utils.startShareArticleIntent
@@ -57,7 +60,7 @@ class ArticleFragment : Fragment() {
             viewModel.articleId.offer(args.articleId)
             addBookmarkResult.observe(viewLifecycleOwner, taskResultObserver)
             articleFetchResult.observe(viewLifecycleOwner, taskResultObserver)
-            article.observe(viewLifecycleOwner, Observer {
+            article.observe(viewLifecycleOwner, {
                 this@ArticleFragment.article = it
                 binding.run {
                     setVariable(BR.article, it)
@@ -85,6 +88,16 @@ class ArticleFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.add_bookmark -> {
             viewModel.addBookmark(args.articleId, !article.bookmarked)
+            true
+        }
+        R.id.add_comment -> {
+            findNavController().navigate(
+                R.id.nav_graph_comments,
+                CommentsFragmentArgs(args.articleId, article).toBundle(),
+                navOptions {
+                    launchSingleTop = true
+                },
+            )
             true
         }
         R.id.share -> {
