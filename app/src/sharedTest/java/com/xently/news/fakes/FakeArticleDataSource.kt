@@ -35,6 +35,18 @@ class FakeArticleDataSource(vararg articles: Article) : AbstractDataSource<Artic
         }
     }
 
+    override suspend fun flagArticle(id: Long): TaskResult<Article> {
+        val article = MOCK_DATABASE.firstOrNull { it.id == id } ?: return getArticle(id)
+        val flaggedByMe = !article.flaggedByMe
+        MOCK_DATABASE.add(
+            article.copy(
+                flaggedByMe = flaggedByMe,
+                flagCount = article.flagCount + if (flaggedByMe) 1 else -1
+            )
+        )
+        return getArticle(id)
+    }
+
     override suspend fun getObservableArticles(searchQuery: String?, source: Source) =
         Transformations.map(observables) {
             it.ftsFilter(searchQuery).toList()

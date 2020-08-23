@@ -69,6 +69,10 @@ class ArticleFragment : Fragment() {
                     details.tags.isVisible = it.chipDataList.isNotEmpty()
                     setChips(details.tags, it.chipDataList)
                     updateBookmarkMenuItem(toolbar.menu.findItem(R.id.add_bookmark), it.bookmarked)
+                    updateFlagMenuItem(
+                        toolbar.menu.findItem(R.id.flag_inappropriate),
+                        it.flaggedByMe
+                    )
                 }
                 (childFragmentManager.findFragmentById(R.id.media) as? MediaFragment)?.run {
                     setMediaUris(*it.mediaUris.toTypedArray())
@@ -116,6 +120,14 @@ class ArticleFragment : Fragment() {
         val (title, iconTint) = if (bookmark) {
             Pair(R.string.remove_bookmark, R.attr.colorControlActivated)
         } else Pair(R.string.add_bookmark, R.attr.colorControlNormal)
+        item.setTitle(title)
+        item.icon = item.icon.tintDrawable(binding.toolbar.context.getThemedColor(iconTint))
+    }
+
+    private fun updateFlagMenuItem(item: MenuItem, bookmark: Boolean) {
+        val (title, iconTint) = if (bookmark) {
+            Pair(R.string.un_flag_inappropriate, R.attr.colorControlActivated)
+        } else Pair(R.string.flag_inappropriate, R.attr.colorControlNormal)
         item.setTitle(title)
         item.icon = item.icon.tintDrawable(binding.toolbar.context.getThemedColor(iconTint))
     }

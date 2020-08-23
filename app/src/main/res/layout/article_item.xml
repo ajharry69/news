@@ -144,7 +144,7 @@
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/flag_inappropriate"
                     android:scaleType="centerCrop"
-                    app:isBookmarked="@{article.flagged}"
+                    app:isFlagged="@{article.flaggedByMe}"
                     app:layout_constraintBottom_toBottomOf="@id/add_bookmark"
                     app:layout_constraintEnd_toStartOf="@id/add_bookmark"
                     app:layout_constraintTop_toTopOf="@id/add_bookmark"

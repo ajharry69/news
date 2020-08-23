@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 
 @BindingAdapter(value = ["android:enabled"])
@@ -15,6 +16,11 @@ fun setEnabled(view: View, enabled: Boolean = false) {
 @BindingAdapter(value = ["isVisible"])
 fun setVisible(view: View, isVisible: Boolean) {
     view.isVisible = isVisible
+}
+
+@BindingAdapter(value = ["isRefreshing"])
+fun setRefreshing(view: SwipeRefreshLayout, isRefreshing: Boolean = false) {
+    view.isRefreshing = isRefreshing
 }
 
 @BindingAdapter(value = ["imageFromUrl", "placeholder"], requireAll = false)

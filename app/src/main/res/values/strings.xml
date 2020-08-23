@@ -102,4 +102,5 @@
     </string>
     <string name="add_comment">Add Comment</string>
     <string name="flag_inappropriate">Flag as inappropriate</string>
+    <string name="un_flag_inappropriate">Un-flag inappropriate</string>
 </resources>
