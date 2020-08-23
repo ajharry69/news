@@ -8,8 +8,8 @@ import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult
 import com.xently.common.data.errorMessage
-import com.xently.news.R
 import com.xently.models.Article
+import com.xently.news.R
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.ui.AbstractArticleViewModel
 import kotlinx.coroutines.FlowPreview
@@ -174,6 +174,10 @@ abstract class AbstractArticleListViewModel internal constructor(
     fun setStatusMessage(@StringRes message: Int) = setStatusMessage(context.getString(message))
 
     override fun onBookmarkTaskResultsReceived(results: TaskResult<Any>) {
+        setShowHorizontalProgressbar(results is TaskResult.Loading)
+    }
+
+    override fun onFlagArticleTaskResultsReceived(results: TaskResult<Any>) {
         setShowHorizontalProgressbar(results is TaskResult.Loading)
     }
 

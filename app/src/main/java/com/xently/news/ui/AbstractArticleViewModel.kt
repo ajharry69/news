@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.xently.common.data.TaskResult
+import com.xently.common.data.dataOrFail
+import com.xently.common.data.isSuccessful
+import com.xently.models.Article
 import com.xently.news.data.repository.IArticlesRepository
 import kotlinx.coroutines.launch
 
@@ -18,22 +21,39 @@ abstract class AbstractArticleViewModel internal constructor(
     private val _addBookmarkResult = MutableLiveData<TaskResult<Boolean>>()
     val addBookmarkResult: LiveData<TaskResult<Boolean>>
         get() = _addBookmarkResult
+    private val _flagArticleResult = MutableLiveData<TaskResult<Article>>()
+    val flagArticleResult: LiveData<TaskResult<Article>>
+        get() = _flagArticleResult
     protected val _showProgressbar = MutableLiveData(false)
     val showProgressbar: LiveData<Boolean>
         get() = _showProgressbar
 
     protected val taskResultObserver: (TaskResult<Any>) -> Unit = {
-        onBookmarkTaskResultsReceived(it)
+        if (it.isSuccessful) {
+            if (it.dataOrFail is Article) {
+                onFlagArticleTaskResultsReceived(it)
+            } else if (it.dataOrFail is Boolean) {
+                onBookmarkTaskResultsReceived(it)
+            }
+        }
     }
 
     init {
         _addBookmarkResult.observeForever(taskResultObserver)
+        _flagArticleResult.observeForever(taskResultObserver)
     }
 
     fun addBookmark(articleId: Long, bookmark: Boolean) {
         _addBookmarkResult.value = TaskResult.Loading
         viewModelScope.launch {
             _addBookmarkResult.value = repository.addBookMark(articleId, bookmark)
+        }
+    }
+
+    fun flagArticle(articleId: Long) {
+        _flagArticleResult.value = TaskResult.Loading
+        viewModelScope.launch {
+            _flagArticleResult.value = repository.flagArticle(articleId)
         }
     }
 
@@ -44,9 +64,14 @@ abstract class AbstractArticleViewModel internal constructor(
     override fun onCleared() {
         super.onCleared()
         _addBookmarkResult.removeObserver(taskResultObserver)
+        _flagArticleResult.removeObserver(taskResultObserver)
     }
 
     open fun onBookmarkTaskResultsReceived(results: TaskResult<Any>) {
+        setShowProgressbar(results is TaskResult.Loading)
+    }
+
+    open fun onFlagArticleTaskResultsReceived(results: TaskResult<Any>) {
         setShowProgressbar(results is TaskResult.Loading)
     }
 }

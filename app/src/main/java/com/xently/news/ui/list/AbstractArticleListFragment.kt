@@ -36,6 +36,7 @@ abstract class AbstractArticleListFragment : ListFragment(),
                     },
                 )
             }
+            R.id.flag_inappropriate -> viewModel.flagArticle(article.id)
         }
     }
 

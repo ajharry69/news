@@ -59,6 +59,7 @@ class ArticleFragment : Fragment() {
         viewModel.run {
             viewModel.articleId.offer(args.articleId)
             addBookmarkResult.observe(viewLifecycleOwner, taskResultObserver)
+            flagArticleResult.observe(viewLifecycleOwner, taskResultObserver)
             articleFetchResult.observe(viewLifecycleOwner, taskResultObserver)
             article.observe(viewLifecycleOwner, {
                 this@ArticleFragment.article = it
@@ -88,6 +89,10 @@ class ArticleFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.add_bookmark -> {
             viewModel.addBookmark(args.articleId, !article.bookmarked)
+            true
+        }
+        R.id.flag_inappropriate -> {
+            viewModel.flagArticle(args.articleId)
             true
         }
         R.id.add_comment -> {

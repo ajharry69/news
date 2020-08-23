@@ -14,7 +14,7 @@ import com.xently.news.ui.details.ArticleFragmentArgs
 
 class ArticlesAdapter constructor(private val clickListener: OnActionButtonClickListener? = null) :
     ListAdapter<Article, ArticlesAdapter.ViewHolder>(ArticleDiffUtil()) {
-    interface OnActionButtonClickListener {
+    fun interface OnActionButtonClickListener {
         fun onActionButtonClick(article: Article, view: View)
     }
 
@@ -54,6 +54,9 @@ class ArticlesAdapter constructor(private val clickListener: OnActionButtonClick
                     clickListener?.onActionButtonClick(article, it)
                 }
                 addComment.setOnClickListener {
+                    clickListener?.onActionButtonClick(article, it)
+                }
+                flagInappropriate.setOnClickListener {
                     clickListener?.onActionButtonClick(article, it)
                 }
             }
