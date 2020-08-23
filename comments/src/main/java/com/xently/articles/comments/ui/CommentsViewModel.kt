@@ -26,6 +26,9 @@ class CommentsViewModel @ViewModelInject constructor(
     private val _commentListResults = MutableLiveData<TaskResult<List<Comment>>>()
     val commentListResults: LiveData<TaskResult<List<Comment>>>
         get() = _commentListResults
+    private val _sendCommentResults = MutableLiveData<TaskResult<List<Comment>>>()
+    val sendCommentResults: LiveData<TaskResult<List<Comment>>>
+        get() = _sendCommentResults
     private val _commentListCount = MutableLiveData(0)
     val commentListCount: LiveData<Int>
         get() = _commentListCount
@@ -72,14 +75,15 @@ class CommentsViewModel @ViewModelInject constructor(
 
     @OptIn(FlowPreview::class)
     val commentLists: LiveData<List<Comment>>
-        get() = searchQuery.asFlow()
-            .combineTransform(dataSource.asFlow()) { query, source ->
+        get() = articleId.asFlow()
+            .combineTransform(searchQuery.asFlow()) { articleId, query ->
+                val source = dataSource.value
                 val message = when (source) {
                     Source.REMOTE -> R.string.status_searching_remote_comments
                     Source.LOCAL -> R.string.status_searching_comments
                 }
                 setStatusMessage(query, message)
-                emitAll(repository.getObservableComments(articleId.value, query, source))
+                emitAll(repository.getObservableComments(articleId, query, source))
             }.conflate().asLiveData()
 
     private val observerCommentListTaskResult: (TaskResult<List<Comment>>) -> Unit = {
@@ -163,6 +167,13 @@ class CommentsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             _commentListResults.postValue(repository.getComments(aId, query))
             commentListFetchRetryCount++
+        }
+    }
+
+    fun sendComment(comment: Comment) {
+        _sendCommentResults.postValue(TaskResult.Loading)
+        viewModelScope.launch {
+            _sendCommentResults.postValue(repository.addComments(comment))
         }
     }
 

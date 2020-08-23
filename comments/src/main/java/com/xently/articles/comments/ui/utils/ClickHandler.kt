@@ -1,7 +1,7 @@
 package com.xently.articles.comments.ui.utils
 
-import com.xently.models.Comment
+import com.xently.articles.comments.ui.CommentsViewModel
 
-fun onRetryButtonClicked(comment: Comment) {
+fun onRetryButtonClicked(viewModel: CommentsViewModel) {
 
 }

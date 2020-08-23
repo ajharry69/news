@@ -42,6 +42,8 @@ class ArticleLocalDataSource @Inject constructor(
         return if (article != null) Success(article.article) else Error("Article with ID $id not found")
     }
 
+    override suspend fun flagArticle(id: Long) = getArticle(id)
+
     override suspend fun getObservableArticles(
         searchQuery: String?,
         source: Source

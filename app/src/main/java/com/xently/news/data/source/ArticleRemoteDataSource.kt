@@ -38,6 +38,9 @@ class ArticleRemoteDataSource @Inject constructor(
     override suspend fun getArticle(id: Long) =
         sendRequest { service.getArticle(id) }.updateObservable()
 
+    override suspend fun flagArticle(id: Long) =
+        sendRequest { service.flagArticle(id) }.updateObservable()
+
     override suspend fun getObservableArticles(searchQuery: String?, source: Source) =
         Transformations.map(observables) {
             it.ftsFilter(searchQuery).toList()

@@ -17,6 +17,8 @@ interface IArticleDataSource {
 
     suspend fun getArticle(id: Long): TaskResult<Article>
 
+    suspend fun flagArticle(id: Long): TaskResult<Article>
+
     suspend fun getObservableArticles(
         searchQuery: String? = null,
         source: Source = Source.LOCAL

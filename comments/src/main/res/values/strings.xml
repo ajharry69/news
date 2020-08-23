@@ -6,4 +6,6 @@
     <string name="status_searching_remote_comments">Searching remote comments…</string>
     <string name="status_fetching_remote_comments">Fetching comments from server…</string>
     <string name="status_comments_empty">No comments found!</string>
+    <string name="hint_input_comment">Input comment...</string>
+    <string name="content_desc_send_comment">send comment</string>
 </resources>

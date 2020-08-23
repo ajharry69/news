@@ -62,6 +62,17 @@ class ArticlesRepository @Inject constructor(
         }
     }
 
+    override suspend fun flagArticle(id: Long) = wrapEspressoIdlingResource {
+        withContext(ioDispatcher) {
+            remote.flagArticle(id).run {
+                data?.also { article ->
+                    local.saveArticles(article)
+                }
+                this
+            }
+        }
+    }
+
     override suspend fun getObservableArticles(searchQuery: String?, source: Source) =
         wrapEspressoIdlingResource {
             when (source) {
