@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="expanded_collapsing_appbar_height">250dp</dimen>
-    <dimen name="avatar_dimension">50dp</dimen>
 </resources>

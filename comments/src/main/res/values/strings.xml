@@ -8,4 +8,7 @@
     <string name="status_comments_empty">No comments found!</string>
     <string name="hint_input_comment">Input comment...</string>
     <string name="content_desc_send_comment">send comment</string>
+    <string name="content_desc_author_photo">author photo</string>
+    <string name="content_desc_more_options">more options</string>
+    <string name="content_desc_attach_media">attach media</string>
 </resources>

@@ -85,6 +85,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:reverseLayout="true"
+                    app:stackFromEnd="true"
                     tools:listitem="@layout/comment_item" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -162,7 +164,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/data_status_container">
+            app:layout_constraintTop_toBottomOf="@id/data_status_container"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.TextInputLayout.CommentInput"
+            app:startIconContentDescription="@string/content_desc_attach_media"
+            app:startIconDrawable="@drawable/ic_attachment">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/comment"

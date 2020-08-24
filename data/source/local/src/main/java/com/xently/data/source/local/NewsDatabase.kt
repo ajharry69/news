@@ -18,7 +18,7 @@ import com.xently.models.Medium
         Medium::class,
         Comment::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(RoomTypeConverters.StringListConverter::class)

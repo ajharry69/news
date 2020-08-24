@@ -3,6 +3,7 @@ package com.xently.models
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Entity(
@@ -35,6 +36,10 @@ data class Comment(
     var author: Author = Author(),
     @Ignore
     val replies: List<Comment> = emptyList(),
+    var postTime: String = SimpleDateFormat(
+        "yyyy-MM-dd hh:mm a",
+        Locale.getDefault()
+    ).format(Date()),
     var articleId: Long = Long.MIN_VALUE,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -42,6 +47,7 @@ data class Comment(
         parcel.readString()!!,
         parcel.readParcelable(Author::class.java.classLoader)!!,
         parcel.createTypedArrayList(CREATOR)!!,
+        parcel.readString()!!,
         parcel.readLong()
     )
 
@@ -51,6 +57,7 @@ data class Comment(
             writeString(message)
             writeParcelable(author, flags)
             writeTypedList(replies)
+            writeString(postTime)
             writeLong(articleId)
         }
     }

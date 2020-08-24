@@ -10,6 +10,7 @@ import com.xently.articles.comments.databinding.CommentsFragmentBinding
 import com.xently.articles.comments.ui.utils.CommentsAdapter
 import com.xently.models.Comment
 import com.xently.utilities.ui.fragments.ListFragment
+import com.xently.utilities.viewext.showSnackBar
 import com.xently.utilities.viewext.textAsString
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,6 +49,9 @@ class CommentsFragment : ListFragment() {
                 val message = comment.textAsString() ?: return@setEndIconOnClickListener
                 val comment = Comment(message = message, articleId = args.articleId)
                 this@CommentsFragment.viewModel.sendComment(comment)
+            }
+            commentContainer.setStartIconOnClickListener {
+                showSnackBar(it, "Coming soon...")
             }
         }
     }
