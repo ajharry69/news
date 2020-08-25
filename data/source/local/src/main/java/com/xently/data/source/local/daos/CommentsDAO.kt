@@ -24,6 +24,9 @@ interface CommentsDAO {
     @Query("SELECT * FROM comments WHERE articleId = :articleId AND message LIKE :query")
     fun getObservableComments(articleId: Long, query: String): Flow<List<Comment>>
 
-    @Query("DELETE FROM comments WHERE id IN (:commentIds)")
-    suspend fun deleteComments(vararg commentIds: Long): Int
+    @Query("DELETE FROM comments WHERE articleId = :articleId AND id IN (:commentIds)")
+    suspend fun deleteComments(articleId: Long, vararg commentIds: Long): Int
+
+    @Query("DELETE FROM comments WHERE articleId = :articleId")
+    suspend fun deleteComments(articleId: Long): Int
 }

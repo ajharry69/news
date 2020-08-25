@@ -49,4 +49,5 @@ dependencies {
     api "com.google.dagger:hilt-android-testing:$hilt_version"
     api "androidx.work:work-testing:$work_version"
     api 'app.cash.turbine:turbine:0.2.0'
+    api "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
 }

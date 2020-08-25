@@ -66,9 +66,9 @@ class ArticlesRepositoryTest {
             assertThat(data!!.size, greaterThanOrEqualTo(REMOTE_ARTICLES.size))
         }
         // null search query
-        repository.getArticles(null).run(block)
+        repository.getArticles(null, ).run(block)
         // blank search query
-        repository.getArticles("").run(block)
+        repository.getArticles("", ).run(block)
     }
 
     @Test
@@ -103,11 +103,11 @@ class ArticlesRepositoryTest {
                 assertDataNotNullValue()
                 assertThat(data, contains(articleSearched))
             }
-            repository.getArticles("Unique").run(block)
+            repository.getArticles("Unique", ).run(block)
             // search is case insensitive
-            repository.getArticles("unIqUe").run(block)
+            repository.getArticles("unIqUe", ).run(block)
             // unmatched item
-            repository.getArticles("random unknown article content").run {
+            repository.getArticles("random unknown article content", ).run {
                 assertDataNotNullValue()
                 assertThat(data!!.size, equalTo(0))
             }

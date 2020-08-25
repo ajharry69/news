@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ArticleDAO {
+    @Query("DELETE FROM articles")
+    suspend fun deleteArticles()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveArticles(vararg articles: Article): Array<Long>
 

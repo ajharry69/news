@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 @Suppress("PropertyName")
 abstract class AbstractArticleListViewModel internal constructor(
     app: Application,
-    private val repository: IArticlesRepository
+    private val repository: IArticlesRepository,
 ) : AbstractArticleViewModel(app, repository) {
 
     private val context: Context = app.applicationContext
@@ -151,7 +151,7 @@ abstract class AbstractArticleListViewModel internal constructor(
         val query = searchQuery ?: this.searchQuery.valueOrNull
         setStatusMessage(query, R.string.status_searching_remote_articles)
         viewModelScope.launch {
-            _articleListResults.postValue(repository.getArticles(query))
+            _articleListResults.postValue(repository.getArticles(query, enableLimits))
             articleListFetchRetryCount++
         }
     }
@@ -173,11 +173,7 @@ abstract class AbstractArticleListViewModel internal constructor(
 
     fun setStatusMessage(@StringRes message: Int) = setStatusMessage(context.getString(message))
 
-    override fun onBookmarkTaskResultsReceived(results: TaskResult<Any>) {
-        setShowHorizontalProgressbar(results is TaskResult.Loading)
-    }
-
-    override fun onFlagArticleTaskResultsReceived(results: TaskResult<Any>) {
+    override fun onTaskResultsReceived(results: TaskResult<Any>) {
         setShowHorizontalProgressbar(results is TaskResult.Loading)
     }
 
@@ -198,7 +194,7 @@ abstract class AbstractArticleListViewModel internal constructor(
 
     private fun setStatusMessage(
         query: String?,
-        @StringRes message: Int = R.string.status_searching_articles
+        @StringRes message: Int = R.string.status_searching_articles,
     ) {
         if (!query.isNullOrBlank()) setStatusMessage(message)
     }

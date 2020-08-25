@@ -6,6 +6,10 @@ import com.xently.data.source.local.daos.ArticleDAO
 import kotlinx.coroutines.flow.Flow
 
 class FakeArticleDAO : ArticleDAO {
+    override suspend fun deleteArticles() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun saveArticles(vararg articles: Article): Array<Long> {
         TODO("Not yet implemented")
     }

@@ -3,6 +3,7 @@ package com.xently.models
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.*
+import com.xently.common.data.models.PagedData
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -78,3 +79,5 @@ fun Collection<Comment>.ftsFilter(query: String?): List<Comment> {
         }
     }
 }
+
+fun PagedData<Comment>.ftsFilter(query: String?) = copy(results = results.ftsFilter(query))

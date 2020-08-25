@@ -4,6 +4,7 @@ import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Error
 import com.xently.common.data.TaskResult.Success
+import com.xently.common.data.models.PagedData
 import com.xently.data.source.local.daos.CommentsDAO
 import com.xently.models.Comment
 import javax.inject.Inject
@@ -19,22 +20,40 @@ class CommentsLocalDataSource @Inject constructor(private val dao: CommentsDAO) 
 
     override suspend fun getComments(
         articleId: Long,
-        searchQuery: String?
+        searchQuery: String?,
+        refresh: Boolean,
     ): TaskResult<List<Comment>> {
         val comments = if (searchQuery.isNullOrBlank()) dao.getComments(articleId)
         else dao.getComments(articleId, "%$searchQuery%")
         return Success(comments)
     }
 
+    override suspend fun getComments(
+        articleId: Long,
+        page: Int,
+        size: Int,
+        searchQuery: String?,
+        refresh: Boolean,
+    ): TaskResult<PagedData<Comment>> {
+        val comments = if (searchQuery.isNullOrBlank()) dao.getComments(articleId)
+        else dao.getComments(articleId, searchQuery)
+        return Success(PagedData(results = comments))
+    }
+
     override suspend fun getObservableComments(
         articleId: Long,
         searchQuery: String?,
-        source: Source
+        source: Source,
     ) = if (searchQuery.isNullOrBlank()) dao.getObservableComments(articleId)
     else dao.getObservableComments(articleId, "%$searchQuery%")
 
-    override suspend fun deleteComment(comment: Comment): TaskResult<Unit> {
-        dao.deleteComments(comment.id)
+    override suspend fun deleteComments(articleId: Long, vararg ids: Long): TaskResult<Unit> {
+        dao.deleteComments(articleId, *ids)
+        return Success(Unit)
+    }
+
+    override suspend fun deleteComments(articleId: Long): TaskResult<Unit> {
+        dao.deleteComments(articleId)
         return Success(Unit)
     }
 }

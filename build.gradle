@@ -27,6 +27,7 @@ buildscript {
         room_version = '2.2.5'
         hilt_version = '2.28.3-alpha'
         hilt_jetpack_version = '1.0.0-alpha02'
+        paging_version = "3.0.0-alpha05"
 
         // Retrofit
         retrofit_version = '2.9.0'

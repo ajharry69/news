@@ -6,6 +6,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.xently.common.data.models.PagedData
 import com.xently.common.utils.Exclude
 import com.xently.models.util.ChipData
 import java.text.SimpleDateFormat
@@ -121,3 +122,5 @@ fun Collection<Article>.ftsFilter(query: String?): List<Article> {
         }
     }
 }
+
+fun PagedData<Article>.ftsFilter(query: String?) = copy(results = results.ftsFilter(query))

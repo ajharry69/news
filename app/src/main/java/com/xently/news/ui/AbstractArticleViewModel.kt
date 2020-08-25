@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.xently.common.data.TaskResult
-import com.xently.common.data.dataOrFail
-import com.xently.common.data.isSuccessful
 import com.xently.models.Article
 import com.xently.news.data.repository.IArticlesRepository
 import kotlinx.coroutines.launch
@@ -29,13 +27,7 @@ abstract class AbstractArticleViewModel internal constructor(
         get() = _showProgressbar
 
     protected val taskResultObserver: (TaskResult<Any>) -> Unit = {
-        if (it.isSuccessful) {
-            if (it.dataOrFail is Article) {
-                onFlagArticleTaskResultsReceived(it)
-            } else if (it.dataOrFail is Boolean) {
-                onBookmarkTaskResultsReceived(it)
-            }
-        }
+        onTaskResultsReceived(it)
     }
 
     init {
@@ -67,11 +59,7 @@ abstract class AbstractArticleViewModel internal constructor(
         _flagArticleResult.removeObserver(taskResultObserver)
     }
 
-    open fun onBookmarkTaskResultsReceived(results: TaskResult<Any>) {
-        setShowProgressbar(results is TaskResult.Loading)
-    }
-
-    open fun onFlagArticleTaskResultsReceived(results: TaskResult<Any>) {
+    open fun onTaskResultsReceived(results: TaskResult<Any>) {
         setShowProgressbar(results is TaskResult.Loading)
     }
 }

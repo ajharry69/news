@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class CommentsViewModel @ViewModelInject constructor(
     app: Application,
-    private val repository: ICommentsRepository
+    private val repository: ICommentsRepository,
 ) : AndroidViewModel(app) {
 
     private val context: Context = app.applicationContext
@@ -156,7 +156,7 @@ class CommentsViewModel @ViewModelInject constructor(
     fun getComments(
         articleId: Long? = null,
         searchQuery: String? = null,
-        enableLimits: Boolean = true
+        enableLimits: Boolean = true,
     ) {
         if (!enableLimits) commentListFetchRetryCount = START_TRY_COUNT
         if (commentListFetchRetryCount > MAX_RETRY_COUNT) return
@@ -165,7 +165,7 @@ class CommentsViewModel @ViewModelInject constructor(
         val aId = articleId ?: this.articleId.value
         setStatusMessage(query, R.string.status_searching_remote_comments)
         viewModelScope.launch {
-            _commentListResults.postValue(repository.getComments(aId, query))
+            _commentListResults.postValue(repository.getComments(aId, query, enableLimits))
             commentListFetchRetryCount++
         }
     }
@@ -215,7 +215,7 @@ class CommentsViewModel @ViewModelInject constructor(
 
     private fun setStatusMessage(
         query: String?,
-        @StringRes message: Int = R.string.status_searching_comments
+        @StringRes message: Int = R.string.status_searching_comments,
     ) {
         if (!query.isNullOrBlank()) setStatusMessage(message)
     }

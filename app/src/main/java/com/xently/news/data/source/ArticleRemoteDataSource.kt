@@ -5,6 +5,7 @@ import androidx.lifecycle.asFlow
 import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Success
+import com.xently.common.data.models.PagedData
 import com.xently.common.data.source.remote.AbstractRemoteDataSource
 import com.xently.data.source.remote.services.ArticleService
 import com.xently.models.Article
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 class ArticleRemoteDataSource @Inject constructor(
     private val service: ArticleService,
-    ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : AbstractRemoteDataSource<Article>(ioDispatcher), IArticleDataSource {
     override suspend fun saveArticles(vararg articles: Article) =
         Success(articles.toList()).updateObservables()
@@ -28,11 +29,26 @@ class ArticleRemoteDataSource @Inject constructor(
         return Success(bookmark)
     }
 
-    override suspend fun getArticles(searchQuery: String?): TaskResult<List<Article>> {
+    override suspend fun getArticles(
+        searchQuery: String?,
+        refresh: Boolean,
+    ): TaskResult<List<Article>> {
         val results = sendRequest { service.getArticles() }
         return (if (results is Success) {
             Success(results.data.ftsFilter(searchQuery))
         } else results).updateObservables()
+    }
+
+    override suspend fun getArticles(
+        page: Int,
+        size: Int,
+        searchQuery: String?,
+        refresh: Boolean,
+    ): TaskResult<PagedData<Article>> {
+        val result = sendRequest { service.getArticles(page, size) }
+        return (if (result is Success) {
+            result.copy(data = result.data.ftsFilter(searchQuery))
+        } else result).updateObservablesFromPagedData()
     }
 
     override suspend fun getArticle(id: Long) =
@@ -40,6 +56,11 @@ class ArticleRemoteDataSource @Inject constructor(
 
     override suspend fun flagArticle(id: Long) =
         sendRequest { service.flagArticle(id) }.updateObservable()
+
+    override suspend fun deleteArticles(): TaskResult<Unit> {
+        cleanUpObservables()
+        return Success(Unit)
+    }
 
     override suspend fun getObservableArticles(searchQuery: String?, source: Source) =
         Transformations.map(observables) {

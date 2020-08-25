@@ -4,6 +4,7 @@ import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Error
 import com.xently.common.data.TaskResult.Success
+import com.xently.common.data.models.PagedData
 import com.xently.data.source.local.daos.ArticleDAO
 import com.xently.data.source.local.daos.MediaDAO
 import com.xently.models.Article
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 class ArticleLocalDataSource @Inject constructor(
     private val dao: ArticleDAO,
-    private val mediaDao: MediaDAO
+    private val mediaDao: MediaDAO,
 ) : IArticleDataSource {
     override suspend fun saveArticles(vararg articles: Article): TaskResult<List<Article>> {
         val savedArticles = dao.saveArticles(*articles)
@@ -31,10 +32,24 @@ class ArticleLocalDataSource @Inject constructor(
         return if (isBookmarked) Success(isBookmarked && bookmark) else Error("Error adding bookmark")
     }
 
-    override suspend fun getArticles(searchQuery: String?): TaskResult<List<Article>> {
+    override suspend fun getArticles(
+        searchQuery: String?,
+        refresh: Boolean,
+    ): TaskResult<List<Article>> {
         val articles =
             if (searchQuery.isNullOrBlank()) dao.getArticles() else dao.getArticles(searchQuery)
         return Success(articles.map { it.article })
+    }
+
+    override suspend fun getArticles(
+        page: Int,
+        size: Int,
+        searchQuery: String?,
+        refresh: Boolean,
+    ): TaskResult<PagedData<Article>> {
+        val articles =
+            if (searchQuery.isNullOrBlank()) dao.getArticles() else dao.getArticles(searchQuery)
+        return Success(PagedData(results = articles.map { it.article }))
     }
 
     override suspend fun getArticle(id: Long): TaskResult<Article> {
@@ -44,9 +59,14 @@ class ArticleLocalDataSource @Inject constructor(
 
     override suspend fun flagArticle(id: Long) = getArticle(id)
 
+    override suspend fun deleteArticles(): TaskResult<Unit> {
+        dao.deleteArticles()
+        return Success(Unit)
+    }
+
     override suspend fun getObservableArticles(
         searchQuery: String?,
-        source: Source
+        source: Source,
     ): Flow<List<Article>> {
         val articles = if (searchQuery.isNullOrBlank()) dao.getObservableArticles()
         else dao.getObservableArticles(searchQuery)

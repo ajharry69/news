@@ -6,6 +6,7 @@ import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Error
 import com.xently.common.data.TaskResult.Success
+import com.xently.common.data.models.PagedData
 import com.xently.common.data.source.AbstractDataSource
 import com.xently.models.Article
 import com.xently.models.ftsFilter
@@ -24,9 +25,18 @@ class FakeArticleDataSource(vararg articles: Article) : AbstractDataSource<Artic
         return Success(bookmark)
     }
 
-    override suspend fun getArticles(searchQuery: String?): TaskResult<List<Article>> {
-        return Success(MOCK_DATABASE.ftsFilter(searchQuery)).updateObservables()
-    }
+    override suspend fun getArticles(
+        searchQuery: String?,
+        refresh: Boolean,
+    ) = Success(MOCK_DATABASE.ftsFilter(searchQuery)).updateObservables()
+
+    override suspend fun getArticles(
+        page: Int,
+        size: Int,
+        searchQuery: String?,
+        refresh: Boolean,
+    ) = Success(PagedData(results = MOCK_DATABASE.ftsFilter(searchQuery)))
+        .updateObservablesFromPagedData()
 
     override suspend fun getArticle(id: Long): TaskResult<Article> {
         val article = MOCK_DATABASE.firstOrNull { it.id == id }
@@ -45,6 +55,11 @@ class FakeArticleDataSource(vararg articles: Article) : AbstractDataSource<Artic
             )
         )
         return getArticle(id)
+    }
+
+    override suspend fun deleteArticles(): TaskResult<Unit> {
+//        cleanUpObservables()
+        return Success(Unit)
     }
 
     override suspend fun getObservableArticles(searchQuery: String?, source: Source) =

@@ -13,7 +13,6 @@ import com.xently.news.di.qualifiers.LocalArticlesDataSource
 import com.xently.news.di.qualifiers.RemoteArticlesDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -23,7 +22,7 @@ class ArticlesRepository @Inject constructor(
     @RemoteArticlesDataSource
     private val remote: IArticleDataSource,
     @IODispatcher
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : IArticlesRepository {
     override suspend fun saveArticles(vararg articles: Article) = wrapEspressoIdlingResource {
         withContext(ioDispatcher) {
@@ -42,33 +41,53 @@ class ArticlesRepository @Inject constructor(
             }
         }
 
-    override suspend fun getArticles(searchQuery: String?) = wrapEspressoIdlingResource {
-        withContext(ioDispatcher) {
-            remote.getArticles(searchQuery).run {
-                local.saveArticles(*listData.toTypedArray())
-                local.getArticles(searchQuery)
+    override suspend fun getArticles(searchQuery: String?, refresh: Boolean) =
+        wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                remote.getArticles(searchQuery, refresh).run {
+                    if (refresh) local.deleteArticles()
+                    local.saveArticles(*listData.toTypedArray())
+                    local.getArticles(searchQuery, refresh)
+                }
             }
         }
-    }
+
+    override suspend fun getArticles(page: Int, size: Int, searchQuery: String?, refresh: Boolean) =
+        wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                remote.getArticles(page, size, searchQuery, refresh).apply {
+                    if (refresh) local.deleteArticles()
+                    data?.let {
+                        local.saveArticles(*it.results.toTypedArray())
+                    }
+                }
+            }
+        }
 
     override suspend fun getArticle(id: Long) = wrapEspressoIdlingResource {
         withContext(ioDispatcher) {
-            remote.getArticle(id).run {
+            remote.getArticle(id).apply {
                 data?.also { article ->
                     local.saveArticles(article)
                 }
-                this
             }
         }
     }
 
     override suspend fun flagArticle(id: Long) = wrapEspressoIdlingResource {
         withContext(ioDispatcher) {
-            remote.flagArticle(id).run {
+            remote.flagArticle(id).apply {
                 data?.also { article ->
                     local.saveArticles(article)
                 }
-                this
+            }
+        }
+    }
+
+    override suspend fun deleteArticles() = wrapEspressoIdlingResource {
+        withContext(ioDispatcher) {
+            local.deleteArticles().apply {
+                remote.deleteArticles()
             }
         }
     }
@@ -81,7 +100,7 @@ class ArticlesRepository @Inject constructor(
             }
         }
 
-    override suspend fun getObservableArticle(id: Long, source: Source): Flow<Article> =
+    override suspend fun getObservableArticle(id: Long, source: Source) =
         wrapEspressoIdlingResource {
             when (source) {
                 REMOTE -> remote.getObservableArticle(id, source)
