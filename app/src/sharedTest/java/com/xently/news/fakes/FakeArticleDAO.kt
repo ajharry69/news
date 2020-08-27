@@ -1,5 +1,6 @@
 package com.xently.news.fakes
 
+import androidx.paging.PagingSource
 import com.xently.models.Article
 import com.xently.models.ArticleWithMedia
 import com.xently.data.source.local.daos.ArticleDAO
@@ -23,6 +24,14 @@ class FakeArticleDAO : ArticleDAO {
     }
 
     override fun getArticles(query: String): List<ArticleWithMedia> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPaginatedArticles(): PagingSource<Int, ArticleWithMedia> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPaginatedArticles(query: String): PagingSource<Int, ArticleWithMedia> {
         TODO("Not yet implemented")
     }
 

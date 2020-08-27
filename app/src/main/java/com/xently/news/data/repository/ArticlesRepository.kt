@@ -1,5 +1,8 @@
 package com.xently.news.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.map
 import com.xently.common.data.Source
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
@@ -8,19 +11,24 @@ import com.xently.common.data.listData
 import com.xently.common.di.qualifiers.coroutines.IODispatcher
 import com.xently.common.utils.wrapEspressoIdlingResource
 import com.xently.models.Article
+import com.xently.news.data.ArticleMediator
 import com.xently.news.data.source.IArticleDataSource
 import com.xently.news.di.qualifiers.LocalArticlesDataSource
 import com.xently.news.di.qualifiers.RemoteArticlesDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ArticlesRepository @Inject constructor(
     @LocalArticlesDataSource
     private val local: IArticleDataSource,
     @RemoteArticlesDataSource
     private val remote: IArticleDataSource,
+    private val mediator: ArticleMediator? = null,
     @IODispatcher
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : IArticlesRepository {
@@ -41,6 +49,14 @@ class ArticlesRepository @Inject constructor(
             }
         }
 
+    override fun getArticles(size: Int, searchQuery: String?, enablePlaceholders: Boolean) =
+        wrapEspressoIdlingResource {
+            Pager(config = PagingConfig(size, enablePlaceholders = enablePlaceholders),
+                remoteMediator = mediator) {
+                getArticlePagingSource(searchQuery, LOCAL)
+            }.flow.map { data -> data.map { it.article } }
+        }
+
     override suspend fun getArticles(searchQuery: String?, refresh: Boolean) =
         wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
@@ -52,17 +68,10 @@ class ArticlesRepository @Inject constructor(
             }
         }
 
-    override suspend fun getArticles(page: Int, size: Int, searchQuery: String?, refresh: Boolean) =
-        wrapEspressoIdlingResource {
-            withContext(ioDispatcher) {
-                remote.getArticles(page, size, searchQuery, refresh).apply {
-                    if (refresh) local.deleteArticles()
-                    data?.let {
-                        local.saveArticles(*it.results.toTypedArray())
-                    }
-                }
-            }
-        }
+    override fun getArticlePagingSource(query: String?, source: Source) = when (source) {
+        REMOTE -> remote.getArticlePagingSource(query, source)
+        LOCAL -> local.getArticlePagingSource(query, source)
+    }
 
     override suspend fun getArticle(id: Long) = wrapEspressoIdlingResource {
         withContext(ioDispatcher) {

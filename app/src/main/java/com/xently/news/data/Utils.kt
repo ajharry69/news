@@ -1,0 +1,4 @@
+package com.xently.news.data
+
+
+const val SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA = "SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA"

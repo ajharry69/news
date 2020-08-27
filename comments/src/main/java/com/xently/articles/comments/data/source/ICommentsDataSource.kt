@@ -4,6 +4,7 @@ import com.xently.common.data.Source
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.TaskResult
 import com.xently.common.data.models.PagedData
+import com.xently.common.data.models.PagedData.Companion.DEFAULT_PAGE_SIZE
 import com.xently.models.Comment
 import kotlinx.coroutines.flow.Flow
 
@@ -15,7 +16,7 @@ interface ICommentsDataSource {
     suspend fun getComments(
         articleId: Long,
         page: Int,
-        size: Int = 50,
+        size: Int = DEFAULT_PAGE_SIZE,
         searchQuery: String? = null,
         refresh: Boolean = false,
     ): TaskResult<PagedData<Comment>>

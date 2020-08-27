@@ -15,7 +15,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CommentsRepository @Inject constructor(
     @LocalCommentsDataSource
     private val local: ICommentsDataSource,

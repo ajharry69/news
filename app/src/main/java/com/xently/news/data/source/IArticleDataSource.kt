@@ -1,9 +1,11 @@
 package com.xently.news.data.source
 
+import androidx.paging.PagingSource
 import com.xently.common.data.Source
+import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.TaskResult
-import com.xently.common.data.models.PagedData
 import com.xently.models.Article
+import com.xently.models.ArticleWithMedia
 import kotlinx.coroutines.flow.Flow
 
 interface IArticleDataSource {
@@ -19,12 +21,13 @@ interface IArticleDataSource {
         refresh: Boolean = false,
     ): TaskResult<List<Article>>
 
-    suspend fun getArticles(
-        page: Int,
-        size: Int = 50,
-        searchQuery: String? = null,
-        refresh: Boolean = false,
-    ): TaskResult<PagedData<Article>>
+    /**
+     * @param source only useful in Repository
+     */
+    fun getArticlePagingSource(
+        query: String? = null,
+        source: Source = LOCAL,
+    ): PagingSource<Int, ArticleWithMedia>
 
     suspend fun getArticle(id: Long): TaskResult<Article>
 
@@ -34,8 +37,8 @@ interface IArticleDataSource {
 
     suspend fun getObservableArticles(
         searchQuery: String? = null,
-        source: Source = Source.LOCAL,
+        source: Source = LOCAL,
     ): Flow<List<Article>>
 
-    suspend fun getObservableArticle(id: Long, source: Source = Source.LOCAL): Flow<Article>
+    suspend fun getObservableArticle(id: Long, source: Source = LOCAL): Flow<Article>
 }

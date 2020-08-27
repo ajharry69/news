@@ -1,5 +1,6 @@
 package com.xently.data.source.local.daos
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.xently.models.Article
 import com.xently.models.ArticleWithMedia
@@ -23,6 +24,14 @@ interface ArticleDAO {
     @Transaction
     @Query("SELECT a.* FROM articles_fts INNER JOIN articles AS a ON (articles_fts.rowid = a.id) WHERE articles_fts MATCH :query ORDER BY publicationDate DESC")
     fun getArticles(query: String): List<ArticleWithMedia>
+
+    @Transaction
+    @Query("SELECT * FROM articles ORDER BY publicationDate DESC")
+    fun getPaginatedArticles(): PagingSource<Int, ArticleWithMedia>
+
+    @Transaction
+    @Query("SELECT a.* FROM articles_fts INNER JOIN articles AS a ON (articles_fts.rowid = a.id) WHERE articles_fts MATCH :query ORDER BY publicationDate DESC")
+    fun getPaginatedArticles(query: String): PagingSource<Int, ArticleWithMedia>
 
     @Transaction
     @Query("SELECT * FROM articles WHERE id = :id")

@@ -4,11 +4,10 @@ import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Error
 import com.xently.common.data.TaskResult.Success
-import com.xently.common.data.models.PagedData
 import com.xently.data.source.local.daos.ArticleDAO
 import com.xently.data.source.local.daos.MediaDAO
 import com.xently.models.Article
-import com.xently.models.Medium
+import com.xently.models.media
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,9 +19,8 @@ class ArticleLocalDataSource @Inject constructor(
     override suspend fun saveArticles(vararg articles: Article): TaskResult<List<Article>> {
         val savedArticles = dao.saveArticles(*articles)
         return if (savedArticles.isNotEmpty()) {
-            val media: List<Medium> = articles.flatMap { listOf(*it.media.toTypedArray()) }
             // medium has foreign key assoc with article hence MUST be saved after saving articles
-            mediaDao.saveMedia(*media.toTypedArray())
+            mediaDao.saveMedia(*articles.media().toTypedArray())
             Success(articles.toList())
         } else Error("Error saving ${articles.size - savedArticles.size} articles")
     }
@@ -41,16 +39,8 @@ class ArticleLocalDataSource @Inject constructor(
         return Success(articles.map { it.article })
     }
 
-    override suspend fun getArticles(
-        page: Int,
-        size: Int,
-        searchQuery: String?,
-        refresh: Boolean,
-    ): TaskResult<PagedData<Article>> {
-        val articles =
-            if (searchQuery.isNullOrBlank()) dao.getArticles() else dao.getArticles(searchQuery)
-        return Success(PagedData(results = articles.map { it.article }))
-    }
+    override fun getArticlePagingSource(query: String?, source: Source) =
+        if (query.isNullOrBlank()) dao.getPaginatedArticles() else dao.getPaginatedArticles(query)
 
     override suspend fun getArticle(id: Long): TaskResult<Article> {
         val article = dao.getArticle(id)

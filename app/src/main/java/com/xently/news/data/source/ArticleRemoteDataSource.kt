@@ -5,7 +5,6 @@ import androidx.lifecycle.asFlow
 import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Success
-import com.xently.common.data.models.PagedData
 import com.xently.common.data.source.remote.AbstractRemoteDataSource
 import com.xently.data.source.remote.services.ArticleService
 import com.xently.models.Article
@@ -39,17 +38,8 @@ class ArticleRemoteDataSource @Inject constructor(
         } else results).updateObservables()
     }
 
-    override suspend fun getArticles(
-        page: Int,
-        size: Int,
-        searchQuery: String?,
-        refresh: Boolean,
-    ): TaskResult<PagedData<Article>> {
-        val result = sendRequest { service.getArticles(page, size) }
-        return (if (result is Success) {
-            result.copy(data = result.data.ftsFilter(searchQuery))
-        } else result).updateObservablesFromPagedData()
-    }
+    override fun getArticlePagingSource(query: String?, source: Source) =
+        TODO("Not yet implemented")
 
     override suspend fun getArticle(id: Long) =
         sendRequest { service.getArticle(id) }.updateObservable()

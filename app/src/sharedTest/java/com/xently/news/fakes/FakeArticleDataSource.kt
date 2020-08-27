@@ -2,13 +2,14 @@ package com.xently.news.fakes
 
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.asFlow
+import androidx.paging.PagingSource
 import com.xently.common.data.Source
 import com.xently.common.data.TaskResult
 import com.xently.common.data.TaskResult.Error
 import com.xently.common.data.TaskResult.Success
-import com.xently.common.data.models.PagedData
 import com.xently.common.data.source.AbstractDataSource
 import com.xently.models.Article
+import com.xently.models.ArticleWithMedia
 import com.xently.models.ftsFilter
 import com.xently.news.data.source.IArticleDataSource
 import kotlinx.coroutines.flow.map
@@ -30,13 +31,9 @@ class FakeArticleDataSource(vararg articles: Article) : AbstractDataSource<Artic
         refresh: Boolean,
     ) = Success(MOCK_DATABASE.ftsFilter(searchQuery)).updateObservables()
 
-    override suspend fun getArticles(
-        page: Int,
-        size: Int,
-        searchQuery: String?,
-        refresh: Boolean,
-    ) = Success(PagedData(results = MOCK_DATABASE.ftsFilter(searchQuery)))
-        .updateObservablesFromPagedData()
+    override fun getArticlePagingSource(query: String?, source: Source): PagingSource<Int, ArticleWithMedia> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun getArticle(id: Long): TaskResult<Article> {
         val article = MOCK_DATABASE.firstOrNull { it.id == id }

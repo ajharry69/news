@@ -203,7 +203,7 @@ class AbstractArticleListViewModelImplTest {
     ): IArticlesRepository {
         val local = FakeArticleDataSource(*localData)
         val remote = FakeArticleDataSource(*remoteData)
-        return ArticlesRepository(local, remote, Dispatchers.Unconfined)
+        return ArticlesRepository(local, remote, ioDispatcher = Dispatchers.Unconfined)
     }
 
     private fun createViewModel(repository: IArticlesRepository): AbstractArticleListViewModelImpl {

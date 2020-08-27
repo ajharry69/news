@@ -41,7 +41,7 @@ class ArticlesRepositoryTest {
     fun setUp() {
         local = FakeArticleDataSource()
         remote = FakeArticleDataSource(*REMOTE_ARTICLES.toTypedArray())
-        repository = ArticlesRepository(local, remote, Dispatchers.Unconfined)
+        repository = ArticlesRepository(local, remote, ioDispatcher = Dispatchers.Unconfined)
     }
 
     @Test

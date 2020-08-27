@@ -114,6 +114,10 @@ data class Article(
     }
 }
 
+fun Collection<Article>.media() = flatMap { listOf(*it.media.toTypedArray()) }
+
+fun Array<out Article>.media() = flatMap { listOf(*it.media.toTypedArray()) }
+
 fun Collection<Article>.ftsFilter(query: String?): List<Article> {
     return if (query.isNullOrBlank()) toList() else {
         filter {

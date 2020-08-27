@@ -48,7 +48,7 @@ class ArticleListViewModelTest {
     fun setUp() {
         val local = FakeArticleDataSource(ARTICLE)
         val remote = FakeArticleDataSource(*REMOTE_ARTICLES.toTypedArray(), ARTICLE)
-        repository = ArticlesRepository(local, remote, Dispatchers.Unconfined)
+        repository = ArticlesRepository(local, remote, ioDispatcher = Dispatchers.Unconfined)
         val app = ApplicationProvider.getApplicationContext() as Application
         context = app.applicationContext
         viewModel = ArticleListViewModel(app, repository)
