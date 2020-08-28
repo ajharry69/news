@@ -13,7 +13,6 @@ import com.xently.models.Article
 import com.xently.news.R
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.ui.AbstractArticleViewModel
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -62,14 +61,12 @@ abstract class AbstractArticleListViewModel internal constructor(
     val searchQuery = ConflatedBroadcastChannel<String?>(null)
     val dataSource = ConflatedBroadcastChannel(LOCAL)
 
-    @OptIn(FlowPreview::class)
     private val _startArticleListRefresh: LiveData<Boolean>
         get() = startArticleListRefresh.asFlow().combine(searchQuery.asFlow()) { refresh, query ->
             if (refresh) getArticles(query, false)
             refresh
         }.asLiveData()
 
-    @OptIn(FlowPreview::class)
     val articleLists: LiveData<List<Article>>
         get() = searchQuery.asFlow()
             .combineTransform(dataSource.asFlow()) { query, source ->
@@ -105,7 +102,6 @@ abstract class AbstractArticleListViewModel internal constructor(
         }
     }
 
-    @OptIn(FlowPreview::class)
     private val observerArticleList: (List<Article>) -> Unit = {
         if (it.isNullOrEmpty()) {
             // initiate a remote data fetch if local data source returned empty list
@@ -157,7 +153,6 @@ abstract class AbstractArticleListViewModel internal constructor(
         }
     }
 
-    @OptIn(FlowPreview::class)
     fun getObservableArticles(enablePlaceholders: Boolean = false): Flow<PagingData<Article>> =
         searchQuery.asFlow().flatMapLatest {
             repository.getArticles(searchQuery = it, enablePlaceholders = enablePlaceholders)

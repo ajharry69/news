@@ -4,24 +4,20 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
-import androidx.paging.PagingData
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.xently.articles.comments.ui.CommentsFragmentArgs
 import com.xently.models.Article
 import com.xently.news.R
 import com.xently.news.databinding.ArticleListFragmentBinding
 import com.xently.news.ui.list.utils.ArticlesAdapter
+import com.xently.news.ui.list.utils.OnActionButtonClickListener
 import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.ListFragment
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
-abstract class AbstractArticleListFragment : ListFragment(),
-    ArticlesAdapter.OnActionButtonClickListener {
+abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClickListener {
     private lateinit var articlesAdapter: ArticlesAdapter
     abstract val viewModel: AbstractArticleListViewModel
 
@@ -49,11 +45,12 @@ abstract class AbstractArticleListFragment : ListFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         articlesAdapter = ArticlesAdapter(this)
+//            .apply { withLoadStateFooter(LoadStateAdapter(this)) }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = ArticleListFragmentBinding.inflate(inflater, container, false).apply {
             (activity as? AppCompatActivity)?.run {
@@ -69,7 +66,7 @@ abstract class AbstractArticleListFragment : ListFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.startArticleListRefresh.offer(true)
+            startRefresh()
         }
     }
 
@@ -89,8 +86,13 @@ abstract class AbstractArticleListFragment : ListFragment(),
             }
         })
         /*lifecycleScope.launch {
+            articlesAdapter.loadStateFlow.collectLatest {
+                viewModel.startArticleListRefresh.send(it.refresh is LoadState.Loading)
+            }
+        }
+        lifecycleScope.launch {
             viewModel.getObservableArticles().collectLatest {
-
+                articlesAdapter.submitData(it)
             }
         }*/
     }
@@ -108,7 +110,7 @@ abstract class AbstractArticleListFragment : ListFragment(),
         return when (item.itemId) {
             R.id.search_articles -> activity?.onSearchRequested() ?: false
             R.id.refresh -> {
-                viewModel.startArticleListRefresh.offer(true)
+                startRefresh()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -116,6 +118,12 @@ abstract class AbstractArticleListFragment : ListFragment(),
     }
 
     override fun onCreateSearchIdentifier() = SEARCH_IDENTIFIER
+
+    private fun startRefresh(adapter: Adapter<*> = articlesAdapter) {
+        if (adapter is PagingDataAdapter<*, *>) adapter.refresh() else {
+            viewModel.startArticleListRefresh.offer(true)
+        }
+    }
 
     companion object {
         val SEARCH_IDENTIFIER: String = AbstractArticleListFragment::class.java.name

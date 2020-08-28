@@ -38,6 +38,7 @@ android {
                     "-Xuse-experimental=kotlin.Experimental",
                     '-Xopt-in=kotlin.time.ExperimentalTime',
                     '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                    '-Xopt-in=kotlinx.coroutines.FlowPreview',
             ]
         }
     }
