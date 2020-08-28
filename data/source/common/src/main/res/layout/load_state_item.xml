@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.paging.LoadState" />
+
+        <import
+            alias="LoadStateError"
+            type="androidx.paging.LoadState.Error" />
+
+        <import type="androidx.paging.LoadState.Loading" />
+
+        <variable
+            name="state"
+            type="LoadState" />
+
+        <variable
+            name="errorMessage"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{errorMessage}"
+            android:textAlignment="gravity"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:isVisible="@{!errorMessage.empty}"
+            app:layout_constraintBottom_toTopOf="@+id/progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Error loading " />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:isVisible="@{state instanceof Loading}"
+            app:layout_constraintBottom_toTopOf="@+id/retry"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/error" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            app:isVisible="@{state instanceof LoadStateError}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/progress"
+            app:layout_constraintStart_toStartOf="@+id/progress"
+            app:layout_constraintTop_toBottomOf="@+id/progress" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

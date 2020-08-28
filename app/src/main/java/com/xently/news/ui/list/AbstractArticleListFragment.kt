@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
+import androidx.paging.PagingData
 import com.xently.articles.comments.ui.CommentsFragmentArgs
 import com.xently.models.Article
 import com.xently.news.R
@@ -13,6 +15,10 @@ import com.xently.news.databinding.ArticleListFragmentBinding
 import com.xently.news.ui.list.utils.ArticlesAdapter
 import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.ListFragment
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 abstract class AbstractArticleListFragment : ListFragment(),
     ArticlesAdapter.OnActionButtonClickListener {
@@ -82,6 +88,11 @@ abstract class AbstractArticleListFragment : ListFragment(),
                 statusContainer.isVisible = it
             }
         })
+        /*lifecycleScope.launch {
+            viewModel.getObservableArticles().collectLatest {
+
+            }
+        }*/
     }
 
     override fun onDestroyView() {

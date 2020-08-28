@@ -1,9 +1,9 @@
 package com.xently.news.fakes
 
 import androidx.paging.PagingSource
+import com.xently.data.source.local.daos.ArticleDAO
 import com.xently.models.Article
 import com.xently.models.ArticleWithMedia
-import com.xently.data.source.local.daos.ArticleDAO
 import kotlinx.coroutines.flow.Flow
 
 class FakeArticleDAO : ArticleDAO {

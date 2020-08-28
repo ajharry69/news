@@ -66,6 +66,7 @@ android {
 }
 
 dependencies {
+    api project(path: ':data:source:common')
     implementation project(path: ':common')
     implementation project(path: ':data:models')
 

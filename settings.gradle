@@ -1,3 +1,4 @@
+include ':data:source:common'
 include ':utilities:databinding'
 include ':data:source:remote'
 include ':data:source:local'

@@ -49,11 +49,9 @@ class ArticleMediator @Inject constructor(
             val data = response.body() ?: throw response.error().exception
             database.withTransaction {
                 database.articlesDAO.run {
-                    if (loadType == REFRESH) {
-                        preferences.edit {
-                            putString(SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA, data.toString())
-                        }
-                        deleteArticles()
+                    if (loadType == REFRESH) deleteArticles()
+                    preferences.edit {
+                        putString(SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA, data.toString())
                     }
                     saveArticles(*data.results.toTypedArray())
                 }

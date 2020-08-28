@@ -50,9 +50,6 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     kapt "androidx.hilt:hilt-compiler:$hilt_jetpack_version"
 
-    // Paging
-    api "androidx.paging:paging-runtime:$paging_version"
-
     // Jetpack Security
     api "androidx.security:security-crypto:1.1.0-alpha02"
 

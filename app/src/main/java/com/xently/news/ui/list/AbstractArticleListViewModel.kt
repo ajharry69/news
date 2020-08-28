@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
+import androidx.paging.PagingData
 import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult
@@ -155,6 +156,12 @@ abstract class AbstractArticleListViewModel internal constructor(
             articleListFetchRetryCount++
         }
     }
+
+    @OptIn(FlowPreview::class)
+    fun getObservableArticles(enablePlaceholders: Boolean = false): Flow<PagingData<Article>> =
+        searchQuery.asFlow().flatMapLatest {
+            repository.getArticles(searchQuery = it, enablePlaceholders = enablePlaceholders)
+        }
 
     fun setShowHorizontalProgressbar(show: Boolean = false) {
         _showHorizontalProgressbar.postValue(show)
