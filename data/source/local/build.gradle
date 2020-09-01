@@ -20,6 +20,7 @@ android {
             arguments {
                 arg("room.schemaLocation", "$projectDir/db/schemas/")
                 arg("room.incremental", "true")
+                arg("room.expandProjection", "true")
             }
         }
     }

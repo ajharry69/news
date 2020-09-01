@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
+import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.xently.articles.comments.ui.CommentsFragmentArgs
+import com.xently.data.source.common.LoadStateAdapter
 import com.xently.models.Article
 import com.xently.news.R
 import com.xently.news.databinding.ArticleListFragmentBinding
@@ -16,6 +19,8 @@ import com.xently.news.ui.list.utils.ArticlesAdapter
 import com.xently.news.ui.list.utils.OnActionButtonClickListener
 import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.ListFragment
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClickListener {
     private lateinit var articlesAdapter: ArticlesAdapter
@@ -45,13 +50,14 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         articlesAdapter = ArticlesAdapter(this)
-//            .apply { withLoadStateFooter(LoadStateAdapter(this)) }
+            .apply { withLoadStateFooter(LoadStateAdapter(this)) }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        viewModel.isListeningToPagedList = true
         _binding = ArticleListFragmentBinding.inflate(inflater, container, false).apply {
             (activity as? AppCompatActivity)?.run {
                 setSupportActionBar(toolbar)
@@ -76,16 +82,13 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
             viewModel = this@AbstractArticleListFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
-        viewModel.articleLists.observe(viewLifecycleOwner, {
-            articlesAdapter.submitList(it)
-        })
         viewModel.showStatusView.observe(viewLifecycleOwner, {
             binding.run {
                 swipeRefresh.isVisible = !it
                 statusContainer.isVisible = it
             }
         })
-        /*lifecycleScope.launch {
+        lifecycleScope.launch {
             articlesAdapter.loadStateFlow.collectLatest {
                 viewModel.startArticleListRefresh.send(it.refresh is LoadState.Loading)
             }
@@ -94,7 +97,7 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
             viewModel.getObservableArticles().collectLatest {
                 articlesAdapter.submitData(it)
             }
-        }*/
+        }
     }
 
     override fun onDestroyView() {

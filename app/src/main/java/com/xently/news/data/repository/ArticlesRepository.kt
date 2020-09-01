@@ -51,8 +51,13 @@ class ArticlesRepository @Inject constructor(
 
     override fun getArticles(size: Int, searchQuery: String?, enablePlaceholders: Boolean) =
         wrapEspressoIdlingResource {
-            Pager(config = PagingConfig(size, enablePlaceholders = enablePlaceholders),
-                remoteMediator = mediator) {
+            val config = PagingConfig(
+                size,
+                initialLoadSize = size * 3,
+                maxSize = size + (size * 2),
+                enablePlaceholders = enablePlaceholders,
+            )
+            Pager(config = config, remoteMediator = mediator) {
                 getArticlePagingSource(searchQuery, LOCAL)
             }.flow.map { data -> data.map { it.article } }
         }

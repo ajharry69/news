@@ -23,6 +23,7 @@ abstract class AbstractArticleListViewModel internal constructor(
     private val repository: IArticlesRepository,
 ) : AbstractArticleViewModel(app, repository) {
 
+    var isListeningToPagedList: Boolean = true
     private val context: Context = app.applicationContext
     private var articleListFetchRetryCount = START_TRY_COUNT
     private val _articleListResults = MutableLiveData<TaskResult<List<Article>>>()
@@ -131,8 +132,10 @@ abstract class AbstractArticleListViewModel internal constructor(
     }
 
     init {
-        articleLists.observeForever(observerArticleList)
-        _articleListResults.observeForever(observerArticleListTaskResult)
+        if (!isListeningToPagedList) {
+            articleLists.observeForever(observerArticleList)
+            _articleListResults.observeForever(observerArticleListTaskResult)
+        }
         _startArticleListRefresh.observeForever(observerStartArticleListRefresh)
         _showHorizontalProgressbar.observeForever(observerShowHorizontalProgressbar)
         _showSwipeRefreshProgressIndicator.observeForever(observerShowSwipeRefreshProgressIndicator)

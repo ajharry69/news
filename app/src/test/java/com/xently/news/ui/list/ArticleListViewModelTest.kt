@@ -12,8 +12,8 @@ import com.xently.common.data.Source.LOCAL
 import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult.Loading
 import com.xently.models.util.ARTICLE
-import com.xently.news.R
 import com.xently.models.util.createArticles
+import com.xently.news.R
 import com.xently.news.data.repository.ArticlesRepository
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.fakes.FakeArticleDataSource
@@ -51,7 +51,7 @@ class ArticleListViewModelTest {
         repository = ArticlesRepository(local, remote, ioDispatcher = Dispatchers.Unconfined)
         val app = ApplicationProvider.getApplicationContext() as Application
         context = app.applicationContext
-        viewModel = ArticleListViewModel(app, repository)
+        viewModel = ArticleListViewModel(app, repository).apply { isListeningToPagedList = false }
     }
 
     /**

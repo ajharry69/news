@@ -26,11 +26,11 @@ interface ArticleDAO {
     fun getArticles(query: String): List<ArticleWithMedia>
 
     @Transaction
-    @Query("SELECT * FROM articles ORDER BY publicationDate DESC")
+    @Query("SELECT * FROM articles ORDER BY publicationDate DESC, creationTime DESC, updateTime DESC")
     fun getPaginatedArticles(): PagingSource<Int, ArticleWithMedia>
 
     @Transaction
-    @Query("SELECT a.* FROM articles_fts INNER JOIN articles AS a ON (articles_fts.rowid = a.id) WHERE articles_fts MATCH :query ORDER BY publicationDate DESC")
+    @Query("SELECT a.* FROM articles_fts INNER JOIN articles AS a ON (articles_fts.rowid = a.id) WHERE articles_fts MATCH :query ORDER BY publicationDate DESC, creationTime DESC, updateTime DESC")
     fun getPaginatedArticles(query: String): PagingSource<Int, ArticleWithMedia>
 
     @Transaction

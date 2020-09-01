@@ -2,11 +2,11 @@ package com.xently.news.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.LoadType.*
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.paging.RemoteMediator.MediatorResult.Success
 import androidx.room.withTransaction
 import com.xently.common.data.models.PagedData
 import com.xently.common.data.models.error
@@ -19,8 +19,9 @@ import com.xently.models.media
 import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@OptIn(ExperimentalPagingApi::class)
+@Singleton
 class ArticleMediator @Inject constructor(
     private val service: ArticleService,
     private val database: NewsDatabase,
@@ -32,32 +33,40 @@ class ArticleMediator @Inject constructor(
         state: PagingState<Int, ArticleWithMedia>,
     ): MediatorResult {
         return try {
-            val page = when (loadType) {
-                REFRESH -> null
-                PREPEND -> return MediatorResult.Success(true)
+            val pageConfig = state.config
+            val initialPageMultiplier = pageConfig.initialLoadSize / pageConfig.pageSize
+            val (page, limit) = when (loadType) {
+                REFRESH -> Pair(null, pageConfig.initialLoadSize)
+                PREPEND -> return Success(true)
                 APPEND -> {
-                    val pageData = PagedData.fromJson<Article>(preferences.getString(
-                        SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA,
-                        null))
-                    if (pageData.isDataLoadFinished) return MediatorResult.Success(
-                        true)
-                    pageData.nextPage
+                    val json = preferences.getString(SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA, null)
+                    val data = PagedData.fromJson<Article>(json)
+                        .copy(initialPageMultiplier = initialPageMultiplier)
+                    if (data.isDataLoadFinished) return Success(true)
+                    Pair(data.nextPage, pageConfig.pageSize)
                 }
             }
-
-            val response = service.getArticles(page ?: 1, state.config.pageSize + 5)
-            val data = response.body() ?: throw response.error().exception
-            database.withTransaction {
-                database.articlesDAO.run {
-                    if (loadType == REFRESH) deleteArticles()
-                    preferences.edit {
-                        putString(SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA, data.toString())
+            val response = service.getArticles(page ?: 1, limit)
+            val isRefresh = loadType == REFRESH
+            val data = response.body()
+                ?.copy(isRefresh = isRefresh, initialPageMultiplier = initialPageMultiplier)
+                ?: throw response.error().exception
+            with(database) {
+                withTransaction {
+                    articlesDAO.run {
+                        preferences.edit {
+                            if (isRefresh) {
+                                remove(SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA)
+                                deleteArticles()
+                            }
+                            putString(SHARED_PREFERENCE_KEY_ARTICLE_PAGE_DATA, data.toString())
+                        }
+                        saveArticles(*data.results.toTypedArray())
                     }
-                    saveArticles(*data.results.toTypedArray())
+                    mediaDAO.saveMedia(*data.results.media().toTypedArray())
                 }
-                database.mediaDAO.saveMedia(*data.results.media().toTypedArray())
             }
-            MediatorResult.Success(data.isDataLoadFinished)
+            Success(data.isDataLoadFinished)
         } catch (e: IOException) {
             MediatorResult.Error(e)
         } catch (e: HttpException) {
