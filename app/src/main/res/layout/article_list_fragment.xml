@@ -9,10 +9,6 @@
             name="viewModel"
             type="com.xently.news.ui.list.AbstractArticleListViewModel" />
 
-        <import
-            alias="Click"
-            type="com.xently.news.ui.list.utils.ClickHandlerKt" />
-
         <variable
             name="filtered"
             type="Boolean" />
@@ -140,7 +136,6 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:enabled="@{!viewModel.showProgressbar}"
-                    android:onClick="@{(v) -> Click.onRetryButtonClick(viewModel)}"
                     android:text="@string/retry"
                     android:visibility="gone"
                     app:isVisible="@{!viewModel.showProgressbar}"

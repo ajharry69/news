@@ -27,7 +27,7 @@ data class PagedData<T>(
     override fun toString(): String = JSON_CONVERTER.toJson(this)
 
     companion object {
-        const val DEFAULT_PAGE_SIZE = 15
+        const val DEFAULT_PAGE_SIZE = 30
         fun <T> fromJson(json: String?) = if (json.isNullOrBlank()) PagedData<T>() else {
             JSON_CONVERTER.fromJson(json, object : TypeToken<PagedData<T>>() {}.type)
         }

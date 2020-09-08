@@ -8,6 +8,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.paging.RemoteMediator.MediatorResult.Success
 import androidx.room.withTransaction
+import com.xently.common.data.models.HttpException
 import com.xently.common.data.models.PagedData
 import com.xently.common.data.models.error
 import com.xently.common.di.qualifiers.UnencryptedSharedPreference
@@ -17,7 +18,6 @@ import com.xently.models.Article
 import com.xently.models.ArticleWithMedia
 import com.xently.models.media
 import okio.IOException
-import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -50,7 +50,7 @@ class ArticleMediator @Inject constructor(
             val isRefresh = loadType == REFRESH
             val data = response.body()
                 ?.copy(isRefresh = isRefresh, initialPageMultiplier = initialPageMultiplier)
-                ?: throw response.error().exception
+                ?: throw response.error()
             with(database) {
                 withTransaction {
                     articlesDAO.run {

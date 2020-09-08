@@ -10,17 +10,17 @@ data class HttpException(
     val code: String? = null,
     val errors: Any? = null,
     val metadata: Any? = null,
+    @Transient
     val response: Response<*> = Response.success(null),
-) : retrofit2.HttpException(response) {
-    val exception = RuntimeException(error)
-}
+) : RuntimeException(error)
 
 fun Response<*>.error(): HttpException = try {
-    JSON_CONVERTER.fromJson(
+    val exception = JSON_CONVERTER.fromJson(
         errorBody()?.string(),
         HttpException::class.java
     ).copy(response = this)
+    if (exception.error.isNullOrBlank()) exception.copy(error = message()) else exception
 } catch (ex: IllegalStateException) {
     Log.show("HttpError", ex.message, ex, Log.Type.ERROR)
-    HttpException("An error occurred", null, response = this)
+    HttpException(message(), null, response = this)
 }

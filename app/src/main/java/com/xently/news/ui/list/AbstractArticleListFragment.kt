@@ -19,6 +19,7 @@ import com.xently.news.ui.list.utils.ArticlesAdapter
 import com.xently.news.ui.list.utils.OnActionButtonClickListener
 import com.xently.news.ui.utils.startShareArticleIntent
 import com.xently.utilities.ui.fragments.ListFragment
+import com.xently.utilities.viewext.setClickListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -57,7 +58,6 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        viewModel.isListeningToPagedList = true
         _binding = ArticleListFragmentBinding.inflate(inflater, container, false).apply {
             (activity as? AppCompatActivity)?.run {
                 setSupportActionBar(toolbar)
@@ -71,8 +71,13 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.swipeRefresh.setOnRefreshListener {
-            startRefresh()
+        binding.run {
+            swipeRefresh.setOnRefreshListener {
+                startRefresh()
+            }
+            retry.setClickListener {
+                startRefresh()
+            }
         }
     }
 
@@ -88,11 +93,11 @@ abstract class AbstractArticleListFragment : ListFragment(), OnActionButtonClick
                 statusContainer.isVisible = it
             }
         })
-        lifecycleScope.launch {
-            articlesAdapter.loadStateFlow.collectLatest {
-                viewModel.startArticleListRefresh.send(it.refresh is LoadState.Loading)
-            }
-        }
+//        lifecycleScope.launch {
+//            articlesAdapter.loadStateFlow.collectLatest {
+//                viewModel.startArticleListRefresh.send(it.refresh is LoadState.Loading)
+//            }
+//        }
         lifecycleScope.launch {
             viewModel.getObservableArticles().collectLatest {
                 articlesAdapter.submitData(it)

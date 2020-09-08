@@ -3,19 +3,18 @@ package com.xently.news.ui.list
 import android.app.Application
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
 import androidx.paging.PagingData
 import com.xently.common.data.Source.LOCAL
-import com.xently.common.data.Source.REMOTE
 import com.xently.common.data.TaskResult
-import com.xently.common.data.errorMessage
 import com.xently.models.Article
-import com.xently.news.R
 import com.xently.news.data.repository.IArticlesRepository
 import com.xently.news.ui.AbstractArticleViewModel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 @Suppress("PropertyName")
 abstract class AbstractArticleListViewModel internal constructor(
@@ -23,9 +22,7 @@ abstract class AbstractArticleListViewModel internal constructor(
     private val repository: IArticlesRepository,
 ) : AbstractArticleViewModel(app, repository) {
 
-    var isListeningToPagedList: Boolean = true
     private val context: Context = app.applicationContext
-    private var articleListFetchRetryCount = START_TRY_COUNT
     private val _articleListResults = MutableLiveData<TaskResult<List<Article>>>()
     val articleListResults: LiveData<TaskResult<List<Article>>>
         get() = _articleListResults
@@ -54,8 +51,6 @@ abstract class AbstractArticleListViewModel internal constructor(
         get() = _showProgressbar.asFlow().conflate()
             .combine(_statusMessage.asFlow().conflate()) { showProgress, statusMsg ->
                 showProgress || !statusMsg.isNullOrBlank()
-            }.combine(articleLists.asFlow().conflate()) { showStatus, articles ->
-                showStatus && articles.isNullOrEmpty()
             }.asLiveData()
 
     val startArticleListRefresh = ConflatedBroadcastChannel(false)
@@ -63,53 +58,7 @@ abstract class AbstractArticleListViewModel internal constructor(
     val dataSource = ConflatedBroadcastChannel(LOCAL)
 
     private val _startArticleListRefresh: LiveData<Boolean>
-        get() = startArticleListRefresh.asFlow().combine(searchQuery.asFlow()) { refresh, query ->
-            if (refresh) getArticles(query, false)
-            refresh
-        }.asLiveData()
-
-    val articleLists: LiveData<List<Article>>
-        get() = searchQuery.asFlow()
-            .combineTransform(dataSource.asFlow()) { query, source ->
-                val message = when (source) {
-                    REMOTE -> R.string.status_searching_remote_articles
-                    LOCAL -> R.string.status_searching_articles
-                }
-                setStatusMessage(query, message)
-                emitAll(repository.getObservableArticles(query, source))
-            }.conflate().asLiveData()
-
-    private val observerArticleListTaskResult: (TaskResult<List<Article>>) -> Unit = {
-        when (it) {
-            is TaskResult.Success -> {
-                hideLoadingStatus()
-                if (it.data.isNullOrEmpty()) {
-                    setStatusMessage(R.string.status_articles_empty)
-                } else {
-                    articleListFetchRetryCount = START_TRY_COUNT
-                    setStatusMessage(null)
-                }
-            }
-            is TaskResult.Error -> {
-                hideLoadingStatus()
-                setStatusMessage(it.errorMessage)
-            }
-            is TaskResult.Loading -> {
-                setShowProgressbar(true)
-                val showHrPb = (articleLists.value?.size ?: articleListCount.value ?: 0) > 0
-                setShowHorizontalProgressbar(showHrPb)
-                setStatusMessage(R.string.status_fetching_remote_articles)
-            }
-        }
-    }
-
-    private val observerArticleList: (List<Article>) -> Unit = {
-        if (it.isNullOrEmpty()) {
-            // initiate a remote data fetch if local data source returned empty list
-            if (dataSource.value == LOCAL) getArticles(searchQuery.value)
-        }
-        _articleListCount.value = it.size
-    }
+        get() = startArticleListRefresh.asFlow().asLiveData()
 
     private val observerShowHorizontalProgressbar: (Boolean) -> Unit = {
         // do not show two progress bars at the same time
@@ -132,28 +81,9 @@ abstract class AbstractArticleListViewModel internal constructor(
     }
 
     init {
-        if (!isListeningToPagedList) {
-            articleLists.observeForever(observerArticleList)
-            _articleListResults.observeForever(observerArticleListTaskResult)
-        }
         _startArticleListRefresh.observeForever(observerStartArticleListRefresh)
         _showHorizontalProgressbar.observeForever(observerShowHorizontalProgressbar)
         _showSwipeRefreshProgressIndicator.observeForever(observerShowSwipeRefreshProgressIndicator)
-    }
-
-    /**
-     * Fetch article(s) remotely
-     */
-    fun getArticles(searchQuery: String? = null, enableLimits: Boolean = true) {
-        if (!enableLimits) articleListFetchRetryCount = START_TRY_COUNT
-        if (articleListFetchRetryCount > MAX_RETRY_COUNT) return
-        _articleListResults.postValue(TaskResult.Loading)
-        val query = searchQuery ?: this.searchQuery.valueOrNull
-        setStatusMessage(query, R.string.status_searching_remote_articles)
-        viewModelScope.launch {
-            _articleListResults.postValue(repository.getArticles(query, enableLimits))
-            articleListFetchRetryCount++
-        }
     }
 
     fun getObservableArticles(enablePlaceholders: Boolean = false): Flow<PagingData<Article>> =
@@ -173,7 +103,7 @@ abstract class AbstractArticleListViewModel internal constructor(
     }
 
     fun setStatusMessage(message: String? = null) {
-        if (articleLists.value.isNullOrEmpty()) _statusMessage.postValue(message)
+        _statusMessage.postValue(message)
     }
 
     fun setStatusMessage(@StringRes message: Int) = setStatusMessage(context.getString(message))
@@ -184,28 +114,8 @@ abstract class AbstractArticleListViewModel internal constructor(
 
     override fun onCleared() {
         super.onCleared()
-        articleLists.removeObserver(observerArticleList)
-        _articleListResults.removeObserver(observerArticleListTaskResult)
         _showSwipeRefreshProgressIndicator.removeObserver(observerShowSwipeRefreshProgressIndicator)
         _startArticleListRefresh.removeObserver(observerStartArticleListRefresh)
         _showHorizontalProgressbar.removeObserver(observerShowHorizontalProgressbar)
-    }
-
-    private fun hideLoadingStatus() {
-        startArticleListRefresh.offer(false)
-        setShowHorizontalProgressbar(false)
-        setShowProgressbar(false)
-    }
-
-    private fun setStatusMessage(
-        query: String?,
-        @StringRes message: Int = R.string.status_searching_articles,
-    ) {
-        if (!query.isNullOrBlank()) setStatusMessage(message)
-    }
-
-    companion object {
-        private const val START_TRY_COUNT = 1
-        private const val MAX_RETRY_COUNT = 3
     }
 }
